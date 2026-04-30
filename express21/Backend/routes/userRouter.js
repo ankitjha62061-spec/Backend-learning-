@@ -135,4 +135,90 @@ router.post("/", authMiddleware, (req, res) => {
 });
 
 
+
+
+
+// put
+router.put("/:id", authMiddleware, (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email } = req.body;
+
+    const user = users.find((u) => u.id == id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+
+    user.name = name;
+    user.email = email;
+
+    res.json({
+      message: "User updated successfully",
+      user,
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user" });
+  }
+});
+
+
+
+// patch
+router.patch("/:id", authMiddleware, (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = users.find((u) => u.id == id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+
+    if (req.body.name) user.name = req.body.name;
+    if (req.body.email) user.email = req.body.email;
+
+    res.json({
+      message: "User partially updated",
+      user,
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: "Error patching user" });
+  }
+});
+
+
+
+// delete
+
+router.delete("/:id", authMiddleware, (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const index = users.findIndex((u) => u.id == id);
+
+    if (index === -1) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const deletedUser = users.splice(index, 1);
+
+    res.json({
+      message: "User deleted successfully",
+      user: deletedUser,
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user" });
+  }
+});
+
+
+
+
+
 module.exports = router;
