@@ -3,7 +3,8 @@ const router = express.Router();
 const { createToken } = require("../utils/jwt");
 const authMiddleware = require("../middleware/authMiddleware");
 const bcrypt = require("bcrypt");
-const users = require("../data/users");
+// const users = require("../data/users");
+const User = require("../models/User"); 
 const jwt = require("jsonwebtoken");
 
 const SECRET = "mysecretkey";
@@ -218,5 +219,28 @@ router.delete("/:id", authMiddleware, (req, res) => {
     res.status(500).json({ message: "Error deleting user" });
   }
 });
+
+
+
+// test  
+
+
+
+router.get("/test", async (req, res) => {
+  try {
+    const user = new User({
+      email: "test@gmail.com",
+      password: "123456",
+    });
+
+    await user.save();
+
+    res.send("User saved in MongoDB");
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+
 
 module.exports = router;
