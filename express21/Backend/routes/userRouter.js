@@ -53,6 +53,8 @@ router.post("/signup", (req, res) => {
   }
 });
 
+
+
 // login 
 
 
@@ -190,7 +192,7 @@ router.patch("/:id", authMiddleware, (req, res) => {
     res.status(500).json({ message: "Error patching user" });
   }
 });
-
+// 
 
 
 // delete
@@ -216,9 +218,5 @@ router.delete("/:id", authMiddleware, (req, res) => {
     res.status(500).json({ message: "Error deleting user" });
   }
 });
-
-
-
-
 
 module.exports = router;

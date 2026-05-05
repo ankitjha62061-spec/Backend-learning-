@@ -1,13 +1,15 @@
 const express = require("express");
 const app = express();
 
+const connectDB = require("./config/db"); 
 const userRouter = require("./routes/userRouter");
 
 app.use(express.json());
 
 
-app.use("/users", userRouter);
+connectDB(); 
 
+app.use("/users", userRouter);
 
 app.get("/", (req, res) => {
   res.send("hello Ankit ");
