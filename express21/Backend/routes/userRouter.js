@@ -10,18 +10,67 @@ const jwt = require("jsonwebtoken");
 const SECRET = "mysecretkey";
 
 // signup
-router.post("/signup", (req, res) => {
+// router.post("/signup", (req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
+
+  
+//     if (!name || !email || !password) {
+//       return res.status(400).json({
+//         message: "Please enter name, email and password",
+//       });
+//     }
+
+//     const existingUser = users.find((u) => u.email === email);
+
+//     if (existingUser) {
+//       return res.status(400).json({
+//         message: "Email already registered",
+//       });
+//     }
+
+   
+//     const hash = bcrypt.hashSync(password, 10);
+
+//     const newUser = {
+//       id: users.length + 1,
+//       name,
+//       email,
+//       password: hash,
+//     };
+
+//     users.push(newUser);
+
+//     return res.status(201).json({
+//       message: "Signup Successful",
+//       user: { id: newUser.id, name: newUser.name, email: newUser.email },
+//     });
+
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: "Server error during signup",
+//       error: error.message,
+//     });
+//   }
+// });
+
+
+
+
+// signup in mongo 
+
+router.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-  
     if (!name || !email || !password) {
       return res.status(400).json({
         message: "Please enter name, email and password",
       });
     }
 
-    const existingUser = users.find((u) => u.email === email);
+    // check in MongoDB
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       return res.status(400).json({
@@ -29,83 +78,104 @@ router.post("/signup", (req, res) => {
       });
     }
 
-   
     const hash = bcrypt.hashSync(password, 10);
 
-    const newUser = {
-      id: users.length + 1,
+    const newUser = new User({
       name,
       email,
       password: hash,
-    };
+    });
 
-    users.push(newUser);
+    await newUser.save();
 
-    return res.status(201).json({
-      message: "Signup Successful",
-      user: { id: newUser.id, name: newUser.name, email: newUser.email },
+    res.status(201).json({
+      message: "Signup successful (saved in MongoDB)",
     });
 
   } catch (error) {
-    return res.status(500).json({
-      message: "Server error during signup",
+    res.status(500).json({
+      message: "Error",
       error: error.message,
     });
   }
 });
-
 
 
 // login 
 
 
-router.post("/login", (req, res) => {
-  try {
-    const { email, password } = req.body;
+// router.post("/login", (req, res) => {
+//   try {
+//     const { email, password } = req.body;
 
    
-    if (!email || !password) {
-      return res.status(400).json({
-        message: "Please enter email and password",
-      });
-    }
+//     if (!email || !password) {
+//       return res.status(400).json({
+//         message: "Please enter email and password",
+//       });
+//     }
 
-    const user = users.find((u) => u.email === email);
+//     const user = users.find((u) => u.email === email);
 
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
-
-
-    const isMatch = bcrypt.compareSync(password, user.password);
-
-    if (!isMatch) {
-      return res.status(401).json({
-        message: "Wrong password",
-      });
-    }
+//     if (!user) {
+//       return res.status(404).json({
+//         message: "User not found",
+//       });
+//     }
 
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      SECRET,
-      { expiresIn: "1h" }
-    );
+//     const isMatch = bcrypt.compareSync(password, user.password);
 
-    return res.status(200).json({
-      message: "Login successful",
-      token,
-    });
+//     if (!isMatch) {
+//       return res.status(401).json({
+//         message: "Wrong password",
+//       });
+//     }
 
-  } catch (error) {
-    return res.status(500).json({
-      message: "Server error during login",
-      error: error.message,
-    });
+
+//     const token = jwt.sign(
+//       { id: user.id, email: user.email },
+//       SECRET,
+//       { expiresIn: "1h" }
+//     );
+
+//     return res.status(200).json({
+//       message: "Login successful",
+//       token,
+//     });
+
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: "Server error during login",
+//       error: error.message,
+//     });
+//   }
+// });
+
+
+
+// login mongo 
+
+
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
   }
+
+  const isMatch = bcrypt.compareSync(password, user.password);
+
+  if (!isMatch) {
+    return res.status(401).json({ message: "Wrong password" });
+  }
+
+  res.json({ message: "Login success" });
 });
+
+
 
 
 router.get("/", authMiddleware, (req, res) => {
@@ -223,9 +293,6 @@ router.delete("/:id", authMiddleware, (req, res) => {
 
 
 // test  
-
-
-
 router.get("/test", async (req, res) => {
   try {
     const user = new User({
