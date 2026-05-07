@@ -9,52 +9,6 @@ const jwt = require("jsonwebtoken");
 
 const SECRET = "mysecretkey";
 
-// signup
-// router.post("/signup", (req, res) => {
-//   try {
-//     const { name, email, password } = req.body;
-
-  
-//     if (!name || !email || !password) {
-//       return res.status(400).json({
-//         message: "Please enter name, email and password",
-//       });
-//     }
-
-//     const existingUser = users.find((u) => u.email === email);
-
-//     if (existingUser) {
-//       return res.status(400).json({
-//         message: "Email already registered",
-//       });
-//     }
-
-   
-//     const hash = bcrypt.hashSync(password, 10);
-
-//     const newUser = {
-//       id: users.length + 1,
-//       name,
-//       email,
-//       password: hash,
-//     };
-
-//     users.push(newUser);
-
-//     return res.status(201).json({
-//       message: "Signup Successful",
-//       user: { id: newUser.id, name: newUser.name, email: newUser.email },
-//     });
-
-//   } catch (error) {
-//     return res.status(500).json({
-//       message: "Server error during signup",
-//       error: error.message,
-//     });
-//   }
-// });
-
-
 
 
 // signup in mongo 
@@ -69,7 +23,6 @@ router.post("/signup", async (req, res) => {
       });
     }
 
-    // check in MongoDB
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -100,57 +53,6 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-
-// login 
-
-
-// router.post("/login", (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-
-   
-//     if (!email || !password) {
-//       return res.status(400).json({
-//         message: "Please enter email and password",
-//       });
-//     }
-
-//     const user = users.find((u) => u.email === email);
-
-//     if (!user) {
-//       return res.status(404).json({
-//         message: "User not found",
-//       });
-//     }
-
-
-//     const isMatch = bcrypt.compareSync(password, user.password);
-
-//     if (!isMatch) {
-//       return res.status(401).json({
-//         message: "Wrong password",
-//       });
-//     }
-
-
-//     const token = jwt.sign(
-//       { id: user.id, email: user.email },
-//       SECRET,
-//       { expiresIn: "1h" }
-//     );
-
-//     return res.status(200).json({
-//       message: "Login successful",
-//       token,
-//     });
-
-//   } catch (error) {
-//     return res.status(500).json({
-//       message: "Server error during login",
-//       error: error.message,
-//     });
-//   }
-// });
 
 
 
@@ -239,6 +141,8 @@ router.put("/:id", authMiddleware, (req, res) => {
 
 
 
+
+
 // patch
 router.patch("/:id", authMiddleware, (req, res) => {
   try {
@@ -263,7 +167,6 @@ router.patch("/:id", authMiddleware, (req, res) => {
     res.status(500).json({ message: "Error patching user" });
   }
 });
-// 
 
 
 // delete
@@ -291,22 +194,21 @@ router.delete("/:id", authMiddleware, (req, res) => {
 });
 
 
+// // test  
+// router.get("/test", async (req, res) => {
+//   try {
+//     const user = new User({
+//       email: "test@gmail.com",
+//       password: "123456",
+//     });
 
-// test  
-router.get("/test", async (req, res) => {
-  try {
-    const user = new User({
-      email: "test@gmail.com",
-      password: "123456",
-    });
+//     await user.save();
 
-    await user.save();
-
-    res.send("User saved in MongoDB");
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
+//     res.send("User saved in MongoDB");
+//   } catch (error) {
+//     res.status(500).send(error.message);
+//   }
+// });
 
 
 
