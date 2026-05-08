@@ -9,6 +9,8 @@ function Signup() {
     password: "",
   });
 
+
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -16,11 +18,30 @@ function Signup() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
 
-    console.log(formData);
-  };
+//     console.log(formData);
+//   };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await signupUser(formData);
+
+    console.log(res.data);
+
+    alert("Signup Successful");
+  } catch (error) {
+    console.log(error.response.data);
+
+    alert(error.response.data.message);
+  }
+};
+
+
+
 
   return (
     <div className="container">
