@@ -60,155 +60,136 @@ router.post("/signup", async (req, res) => {
 
 
 router.post("/login", async (req, res) => {
+
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res.status(404).json({ message: "User not found" });
+    return res.json({ message: "User not found" });
   }
 
   const isMatch = bcrypt.compareSync(password, user.password);
 
   if (!isMatch) {
-    return res.status(401).json({ message: "Wrong password" });
+    return res.json({ message: "Wrong password" });
   }
 
-  res.json({ message: "Login success" });
+
+  const token = createToken(user);
+
+  res.json({
+    message: "Login successful",
+    token,
+  });
 });
 
 
 
 
-router.get("/", authMiddleware, (req, res) => {
-  try {
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching users" });
-  }
+
+router.get("/", authMiddleware, async (req, res) => {
+
+  const users = await User.find().select("-password");
+
+  res.json(users);
 });
 
-router.post("/", authMiddleware, (req, res) => {
-  try {
-    const { name } = req.body;
 
-    if (!name) {
-      return res.status(400).json({ message: "Name required" });
-    }
 
-    const newUser = {
-      id: users.length + 1,
-      name,
-    };
 
-    users.push(newUser);
 
-    res.json(newUser);
-  } catch (error) {
-    res.status(500).json({ message: "Error adding user" });
-  }
+
+
+
+router.post("/", authMiddleware, async (req, res) => {
+
+  const { name, email, password } = req.body;
+
+  const hash = bcrypt.hashSync(password, 10);
+
+  const newUser = new User({
+    name,
+    email,
+    password: hash,
+  });
+
+  await newUser.save();
+
+  res.json({
+    message: "User created",
+    user: newUser,
+  });
 });
+
 
 
 
 
 
 // put
-router.put("/:id", authMiddleware, (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, email } = req.body;
+router.put("/:id", authMiddleware, async (req, res) => {
 
-    const user = users.find((u) => u.id == id);
+  const updatedUser = await User.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  ).select("-password");
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-
-    user.name = name;
-    user.email = email;
-
-    res.json({
-      message: "User updated successfully",
-      user,
+  if (!updatedUser) {
+    return res.json({
+      message: "User not found",
     });
-
-  } catch (error) {
-    res.status(500).json({ message: "Error updating user" });
   }
+
+  res.json({
+    message: "User updated",
+    user: updatedUser,
+  });
 });
+
 
 
 
 
 
 // patch
-router.patch("/:id", authMiddleware, (req, res) => {
-  try {
-    const { id } = req.params;
+router.patch("/:id", authMiddleware, async (req, res) => {
 
-    const user = users.find((u) => u.id == id);
+  const updatedUser = await User.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  ).select("-password");
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-
-    if (req.body.name) user.name = req.body.name;
-    if (req.body.email) user.email = req.body.email;
-
-    res.json({
-      message: "User partially updated",
-      user,
+  if (!updatedUser) {
+    return res.json({
+      message: "User not found",
     });
-
-  } catch (error) {
-    res.status(500).json({ message: "Error patching user" });
   }
-});
 
+  res.json({
+    message: "User patched",
+    user: updatedUser,
+  });
+});
 
 // delete
 
-router.delete("/:id", authMiddleware, (req, res) => {
-  try {
-    const { id } = req.params;
+router.delete("/:id", authMiddleware, async (req, res) => {
 
-    const index = users.findIndex((u) => u.id == id);
+  const deletedUser = await User.findByIdAndDelete(req.params.id);
 
-    if (index === -1) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const deletedUser = users.splice(index, 1);
-
-    res.json({
-      message: "User deleted successfully",
-      user: deletedUser,
+  if (!deletedUser) {
+    return res.json({
+      message: "User not found",
     });
-
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting user" });
   }
+
+  res.json({
+    message: "User deleted",
+  });
 });
-
-
-// // test  
-// router.get("/test", async (req, res) => {
-//   try {
-//     const user = new User({
-//       email: "test@gmail.com",
-//       password: "123456",
-//     });
-
-//     await user.save();
-
-//     res.send("User saved in MongoDB");
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// });
 
 
 
