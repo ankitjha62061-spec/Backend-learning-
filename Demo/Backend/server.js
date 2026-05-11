@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 
@@ -6,16 +7,16 @@ const app = express();
 const connectDB = require("./config/db");
 const userRouter = require("./routes/userRouter");
 
-app.use(cors()); 
+app.use(cors());
 
 app.use(express.json());
 
 connectDB();
 
-app.use("/users", userRouter);
+app.use("/api/auth", userRouter);
 
 app.get("/", (req, res) => {
-  res.send("hello Ankit ");
+  res.send("hello Ankit");
 });
 
 app.listen(3000, () => {
