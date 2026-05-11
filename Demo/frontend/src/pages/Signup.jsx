@@ -30,11 +30,11 @@ const handleSubmit = async (e) => {
   try {
     const res = await signupUser(formData);
 
-    console.log(res.data);
+    // console.log(res.data);
 
     alert("Signup Successful");
   } catch (error) {
-    console.log(error.response.data);
+    // console.log(error.response.data);
 
     alert(error.response.data.message);
   }
