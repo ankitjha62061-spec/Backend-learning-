@@ -86,7 +86,8 @@ function Login() {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed"
+          disabled={!formData?.email || !formData?.password}
         >
           Login
         </button>

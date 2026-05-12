@@ -63,6 +63,12 @@ router.post("/login", async (req, res) => {
 
   const { email, password } = req.body;
 
+  if(!email || !passsword) {
+    return res.status(404).json({
+      message: "Email or password is required"
+    })
+  }
+
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -72,16 +78,15 @@ router.post("/login", async (req, res) => {
   const isMatch = bcrypt.compareSync(password, user.password);
 
   if (!isMatch) {
-    return res.json({ message: "Wrong password" });
+    return res.status(400).json({ message: "Wrong password" });
   }
 
 
   const token = createToken(user);
 
-  res.json({
+  res.status(200).json({
   message: "Login successful",
-  token,
-
+  token: token,
   user: {
     name: user.name,
     email: user.email,
