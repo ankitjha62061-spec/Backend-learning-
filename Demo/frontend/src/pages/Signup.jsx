@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { signupUser } from "../services/authService";
 
 function Signup() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,9 +24,16 @@ function Signup() {
     try {
       const res = await signupUser(formData);
 
+      console.log(res.data);
+
       alert("Signup Successful");
+
+      navigate("/");
     } catch (error) {
-      alert(error.response.data.message);
+      console.log(error);
+      
+       alert(error.response.data.message);
+      // alert("Signup Failed");
     }
   };
 
@@ -52,7 +62,6 @@ function Signup() {
           onChange={handleChange}
           className="w-full border border-gray-300 p-3 rounded-lg mb-4 outline-none focus:ring-2 focus:ring-green-400"
         />
-
 
         <input
           type="password"

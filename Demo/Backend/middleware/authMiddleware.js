@@ -2,27 +2,32 @@ const jwt = require("jsonwebtoken");
 
 const SECRET = "mysecretkey";
 
-function authMiddleware(req, res, next) {
-  const header = req.headers["authorization"];
+const authMiddleware = (req, res, next) => {
 
-  if (!header) {
-    return res.status(401).json({ message: "No token" });
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({
+      message: "Token missing",
+    });
   }
-  const token = header.split(" ")[1];
+
+  const token = authHeader.split(" ")[1];
 
   try {
-    const user = jwt.verify(token, SECRET);
-    req.user = user; 
+
+    const verified = jwt.verify(token, SECRET);
+
+    req.user = verified;
+
     next();
-  } catch {
-    res.status(403).json({ message: "Invalid token" });
+
+  } catch (error) {
+
+    res.status(401).json({
+      message: "Invalid token",
+    });
   }
-}
+};
 
 module.exports = authMiddleware;
-
-
-
-
-
-
