@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import EditModal from "../components/EditModal";
 import DeleteModal from "../components/DeleteModal";
 import SearchBar from "../components/SearchBar";
+import { toast } from "react-toastify";
+
 
 function Dashboard() {
 
@@ -56,40 +58,36 @@ function Dashboard() {
   };
 
 
+const deleteUser = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
+    await axios.delete(
+      `http://localhost:3000/api/auth/${deleteId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
+    toast.error("User deleted successfully", {
+      style: {
+        background: "white",
+        color: "red",
+      },
+      autoClose: 500,
+    });
 
-  const deleteUser = async () => {
+    setDeletePopup(false);
+    getUsers();
 
-    try {
+  } catch (error) {
+    console.log(error);
 
-      const token = localStorage.getItem("token");
-
-      await axios.delete(
-        `http://localhost:3000/api/auth/${deleteId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      alert("User Deleted");
-
-      setDeletePopup(false);
-
-      getUsers();
-
-    } catch (error) {
-
-      console.log(error);
-
-    }
-  };
-
-
-
-  
+    toast.error("Failed to delete user");
+  }
+};
 
   const editUser = (id, name, email) => {
 
@@ -103,41 +101,36 @@ function Dashboard() {
   };
 
 
-  
-  
-  const updateUser = async () => {
+ const updateUser = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-    try {
-
-      const token = localStorage.getItem("token");
-
-      await axios.put(
-        `http://localhost:3000/api/auth/${editId}`,
-        {
-          name: editName,
-          email: editEmail,
+    await axios.put(
+      `http://localhost:3000/api/auth/${editId}`,
+      {
+        name: editName,
+        email: editEmail,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      }
+    );
 
-      alert("User Updated");
+    toast.success("User updated successfully", {
+      autoClose: 500,
+    });
 
-      setIsOpen(false);
+    setIsOpen(false);
 
-      getUsers();
+    getUsers();
 
-    } catch (error) {
-
-      console.log(error);
-
-    }
-  };
-
-
+  } catch (error) {
+    console.log(error);
+    toast.error("Failed to update user");
+  }
+};
 
 
   const handleLogout = () => {
@@ -173,7 +166,7 @@ function Dashboard() {
   }, [search]);
 
 
-  
+
   const filteredUsers = users.filter((user) =>
 
   user.name?.toLowerCase().includes(debounceSearch.toLowerCase()) ||
@@ -250,9 +243,7 @@ function Dashboard() {
           </thead>
 
 
-
-
-          <tbody>
+        <tbody>
 
             {filteredUsers.map((user) => (
 

@@ -15,6 +15,6 @@ function SearchBar({ search, setSearch }) {
     </div>
 
   );
-}g
+}
 
 export default SearchBar;
