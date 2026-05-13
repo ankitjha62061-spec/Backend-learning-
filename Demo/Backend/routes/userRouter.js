@@ -58,42 +58,46 @@ router.post("/signup", async (req, res) => {
 
 // login mongo 
 
-
 router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email or password is required"
+      });
+    }
 
-  if(!email || !passsword) {
-    return res.status(404).json({
-      message: "Email or password is required"
-    })
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = bcrypt.compareSync(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Wrong password" });
+    }
+
+    const token = createToken(user);
+
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
   }
-
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    return res.json({ message: "User not found" });
-  }
-
-  const isMatch = bcrypt.compareSync(password, user.password);
-
-  if (!isMatch) {
-    return res.status(400).json({ message: "Wrong password" });
-  }
-
-
-  const token = createToken(user);
-
-  res.status(200).json({
-  message: "Login successful",
-  token: token,
-  user: {
-    name: user.name,
-    email: user.email,
-  },
 });
-});
-
 
 
 
