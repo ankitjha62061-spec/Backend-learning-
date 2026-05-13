@@ -1,10 +1,26 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import EditModal from "../components/EditModal";
+import DeleteModal from "../components/DeleteModal";
+
 
 function Dashboard() {
 
   const [users, setUsers] = useState([]);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [editId, setEditId] = useState("");
+
+  const [editName, setEditName] = useState("");
+
+  const [editEmail, setEditEmail] = useState("");
+
+  const [deletePopup, setDeletePopup] = useState(false);
+   
+  const [deleteId, setDeleteId] = useState("");
+
 
   const navigate = useNavigate();
 
@@ -31,63 +47,81 @@ function Dashboard() {
     }
   };
 
-  const deleteUser = async (id) => {
 
-    try {
 
-      const token = localStorage.getItem("token");
+  const deleteUser = async () => {
 
-      await axios.delete(
-        `http://localhost:3000/api/auth/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  try {
 
-      alert("User Deleted");
+    const token = localStorage.getItem("token");
 
-      getUsers();
-
-    } catch (error) {
-
-      console.log(error);
-    }
-  };
-
-  const editUser = async (id) => {
-
-    const newName = prompt("Enter new name");
-
-    if (!newName) return;
-
-    try {
-
-      const token = localStorage.getItem("token");
-
-      await axios.put(
-        `http://localhost:3000/api/auth/${id}`,
-        {
-          name: newName,
+    await axios.delete(
+      `http://localhost:3000/api/auth/${deleteId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      }
+    );
 
-      alert("User Updated");
+    alert("User Deleted");
 
-      getUsers();
+    setDeletePopup(false);
 
-    } catch (error) {
+    getUsers();
 
-      console.log(error);
-    }
+  } catch (error) {
+
+    console.log(error);
+  }
+};
+
+const editUser = (id, name, email) => {
+
+    setEditId(id);
+
+    setEditName(name);
+
+    setEditEmail(email);
+
+    setIsOpen(true);
   };
 
+const updateUser = async () => {
+
+  try {
+
+    const token = localStorage.getItem("token");
+
+    await axios.put(
+      `http://localhost:3000/api/auth/${editId}`,
+      {
+        name: editName,
+        email: editEmail,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    alert("User Updated");
+
+    setIsOpen(false);
+
+    getUsers();
+
+  } catch (error) {
+
+    console.log(error);
+  }
+};
+
+
+
+
+  
   const handleLogout = () => {
 
     localStorage.removeItem("token");
@@ -120,7 +154,7 @@ function Dashboard() {
 
       </div>
 
-      <div className="bg-white shadow-lg rounded-2xl p-6">
+      <div className="bg-white shadow-lg rounded-2xl p-6 overflow-x-auto">
 
         <table className="w-full">
 
@@ -169,21 +203,28 @@ function Dashboard() {
                   {user.email}
                 </td>
 
-                <td className="p-3 flex gap-8">
+                <td className="p-3 flex gap-4">
 
                   <button
                     onClick={() =>
-                      editUser(user._id)
+                      editUser(
+                        user._id,
+                        user.name,
+                        user.email
+                      )
                     }
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                   >
                     Edit
                   </button>
 
+
+
                   <button
-                    onClick={() =>
-                      deleteUser(user._id)
-                    }
+                   onClick={() => {
+  setDeleteId(user._id);
+  setDeletePopup(true);
+}}
                     className="bg-red-500 text-white px-4 py-2 rounded-lg"
                   >
                     Delete
@@ -200,8 +241,24 @@ function Dashboard() {
 
       </div>
 
+      <EditModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        editName={editName}
+        setEditName={setEditName}
+        editEmail={editEmail}
+        setEditEmail={setEditEmail}
+        updateUser={updateUser}
+      />
+     
+     <DeleteModal
+     deletePopup={deletePopup}
+     setDeletePopup={setDeletePopup}
+     deleteUser={deleteUser}
+/>
+
     </div>
   );
 }
 
-export default Dashboard; 
+export default Dashboard;

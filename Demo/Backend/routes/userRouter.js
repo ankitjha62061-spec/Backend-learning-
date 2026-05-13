@@ -167,13 +167,18 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
 
 
+
+
+
+
 // patch
 router.patch("/:id", authMiddleware, async (req, res) => {
 
   const updatedUser = await User.findByIdAndUpdate(
     req.params.id,
     req.body,
-    { new: true }
+    // { new: true }
+     { returnDocument: "after" }
   ).select("-password");
 
   if (!updatedUser) {
