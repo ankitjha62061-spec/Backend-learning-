@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 import EditModal from "../components/EditModal";
 import DeleteModal from "../components/DeleteModal";
-
+import SearchBar from "../components/SearchBar";
 
 function Dashboard() {
 
@@ -18,11 +19,17 @@ function Dashboard() {
   const [editEmail, setEditEmail] = useState("");
 
   const [deletePopup, setDeletePopup] = useState(false);
-   
+
   const [deleteId, setDeleteId] = useState("");
 
+  const [search, setSearch] = useState("");
+
+  const [debounceSearch, setDebounceSearch] = useState("");
 
   const navigate = useNavigate();
+
+
+
 
   const getUsers = async () => {
 
@@ -44,39 +51,47 @@ function Dashboard() {
     } catch (error) {
 
       console.log(error);
+
     }
   };
 
 
 
+
+
   const deleteUser = async () => {
 
-  try {
+    try {
 
-    const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
-    await axios.delete(
-      `http://localhost:3000/api/auth/${deleteId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+      await axios.delete(
+        `http://localhost:3000/api/auth/${deleteId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    alert("User Deleted");
+      alert("User Deleted");
 
-    setDeletePopup(false);
+      setDeletePopup(false);
 
-    getUsers();
+      getUsers();
 
-  } catch (error) {
+    } catch (error) {
 
-    console.log(error);
-  }
-};
+      console.log(error);
 
-const editUser = (id, name, email) => {
+    }
+  };
+
+
+
+  
+
+  const editUser = (id, name, email) => {
 
     setEditId(id);
 
@@ -87,41 +102,44 @@ const editUser = (id, name, email) => {
     setIsOpen(true);
   };
 
-const updateUser = async () => {
-
-  try {
-
-    const token = localStorage.getItem("token");
-
-    await axios.put(
-      `http://localhost:3000/api/auth/${editId}`,
-      {
-        name: editName,
-        email: editEmail,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    alert("User Updated");
-
-    setIsOpen(false);
-
-    getUsers();
-
-  } catch (error) {
-
-    console.log(error);
-  }
-};
-
-
-
 
   
+  
+  const updateUser = async () => {
+
+    try {
+
+      const token = localStorage.getItem("token");
+
+      await axios.put(
+        `http://localhost:3000/api/auth/${editId}`,
+        {
+          name: editName,
+          email: editEmail,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("User Updated");
+
+      setIsOpen(false);
+
+      getUsers();
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
+
+
+
   const handleLogout = () => {
 
     localStorage.removeItem("token");
@@ -129,15 +147,49 @@ const updateUser = async () => {
     navigate("/");
   };
 
+
+
+  
+
   useEffect(() => {
 
     getUsers();
 
   }, []);
 
+
+
+
+  useEffect(() => {
+
+    const timer = setTimeout(() => {
+
+      setDebounceSearch(search);
+
+    }, 500);
+
+    return () => clearTimeout(timer);
+
+  }, [search]);
+
+
+  
+  const filteredUsers = users.filter((user) =>
+
+  user.name?.toLowerCase().includes(debounceSearch.toLowerCase()) ||
+
+  user.email?.toLowerCase().includes(debounceSearch.toLowerCase()) ||
+
+  user._id?.includes(debounceSearch)
+
+);
+
+
   return (
 
     <div className="min-h-screen bg-gray-100 p-10">
+
+     
 
       <div className="flex justify-between items-center mb-8">
 
@@ -154,7 +206,22 @@ const updateUser = async () => {
 
       </div>
 
+
+
+
+      
+
       <div className="bg-white shadow-lg rounded-2xl p-6 overflow-x-auto">
+
+      
+
+        <SearchBar
+          search={search}
+          setSearch={setSearch}
+        />
+
+
+
 
         <table className="w-full">
 
@@ -182,9 +249,12 @@ const updateUser = async () => {
 
           </thead>
 
+
+
+
           <tbody>
 
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
 
               <tr
                 key={user._id}
@@ -203,7 +273,11 @@ const updateUser = async () => {
                   {user.email}
                 </td>
 
+
+
+
                 <td className="p-3 flex gap-4">
+
 
                   <button
                     onClick={() =>
@@ -213,19 +287,24 @@ const updateUser = async () => {
                         user.email
                       )
                     }
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
                   >
                     Edit
                   </button>
 
 
 
+
+
                   <button
-                   onClick={() => {
-  setDeleteId(user._id);
-  setDeletePopup(true);
-}}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                    onClick={() => {
+
+                      setDeleteId(user._id);
+
+                      setDeletePopup(true);
+
+                    }}
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
                   >
                     Delete
                   </button>
@@ -233,6 +312,7 @@ const updateUser = async () => {
                 </td>
 
               </tr>
+
             ))}
 
           </tbody>
@@ -240,6 +320,10 @@ const updateUser = async () => {
         </table>
 
       </div>
+
+
+
+
 
       <EditModal
         isOpen={isOpen}
@@ -250,12 +334,13 @@ const updateUser = async () => {
         setEditEmail={setEditEmail}
         updateUser={updateUser}
       />
-     
-     <DeleteModal
-     deletePopup={deletePopup}
-     setDeletePopup={setDeletePopup}
-     deleteUser={deleteUser}
-/>
+
+
+      <DeleteModal
+        deletePopup={deletePopup}
+        setDeletePopup={setDeletePopup}
+        deleteUser={deleteUser}
+      />
 
     </div>
   );
