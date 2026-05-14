@@ -101,16 +101,36 @@ router.post("/login", async (req, res) => {
 
 
 
-
 router.get("/", authMiddleware, async (req, res) => {
 
-  const users = await User.find().select("-password");
+  try {
 
-  res.json(users);
+    const search = req.query.search || "";
+
+    
+    const users = await User.find({
+
+      name: {
+        $regex: search,
+        $options: "i",
+      },
+
+    }).select("-password");
+
+
+    res.json(users);
+
+  } catch (error) {
+
+    res.status(500).json({
+
+      message: error.message,
+
+    });
+
+  }
+
 });
-
-
-
 
 
 
@@ -138,29 +158,79 @@ router.post("/", authMiddleware, async (req, res) => {
 
 
 
-
-
-
-// put
 router.put("/:id", authMiddleware, async (req, res) => {
 
-  const updatedUser = await User.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  ).select("-password");
+  try {
 
-  if (!updatedUser) {
-    return res.json({
-      message: "User not found",
+    const { name, email } = req.body;
+
+    const userId = req.params.id;
+
+    const existingEmail = await User.findOne({
+
+      email,
+
+      _id: { $ne: userId },
+
     });
+
+
+    if (existingEmail) {
+
+      return res.status(400).json({
+
+        message: "Email already exists",
+
+      });
+
+    }
+
+
+    const updatedUser = await User.findByIdAndUpdate(
+
+      userId,
+
+      {
+        name,
+        email,
+      },
+
+      { new: true }
+
+    ).select("-password");
+
+
+    if (!updatedUser) {
+
+      return res.status(404).json({
+
+        message: "User not found",
+
+      });
+
+    }
+
+
+    res.json({
+
+      message: "User updated",
+
+      user: updatedUser,
+
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+
+      message: error.message,
+
+    });
+
   }
 
-  res.json({
-    message: "User updated",
-    user: updatedUser,
-  });
 });
+
 
 // patch
 router.patch("/:id", authMiddleware, async (req, res) => {
@@ -183,6 +253,8 @@ router.patch("/:id", authMiddleware, async (req, res) => {
     user: updatedUser,
   });
 });
+
+
 
 // delete
 

@@ -33,57 +33,74 @@ function Dashboard() {
 
 
 
-  const getUsers = async () => {
+const getUsers = async () => {
 
-    try {
-
-      const token = localStorage.getItem("token");
-
-      const res = await axios.get(
-        "http://localhost:3000/api/auth",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setUsers(res.data);
-
-    } catch (error) {
-
-      console.log(error);
-
-    }
-  };
-
-
-const deleteUser = async () => {
   try {
+
     const token = localStorage.getItem("token");
 
-    await axios.delete(
-      `http://localhost:3000/api/auth/${deleteId}`,
+    const res = await axios.get(
+
+      `http://localhost:3000/api/auth?search=${debounceSearch}`,
+
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
+
     );
 
-   toast.success("User delete successfully", {
+    setUsers(res.data);
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+};
+
+
+const deleteUser = async () => {
+
+  try {
+
+    const token = localStorage.getItem("token");
+
+    await axios.delete(
+
+      `http://localhost:3000/api/auth/${deleteId}`,
+
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+
+    );
+
+    toast.success("User deleted successfully", {
       autoClose: 500,
     });
 
-  
     setDeletePopup(false);
+
     getUsers();
 
   } catch (error) {
+
     console.log(error);
 
-    toast.error("Failed to delete user");
+    toast.error(
+
+      error.response?.data?.message ||
+      "Failed to delete user"
+
+    );
+
   }
+
 };
 
   const editUser = (id, name, email) => {
@@ -140,12 +157,11 @@ const deleteUser = async () => {
 
 
   
-
   useEffect(() => {
 
-    getUsers();
+  getUsers();
 
-  }, []);
+}, [debounceSearch]);
 
 
 
@@ -156,23 +172,13 @@ const deleteUser = async () => {
 
       setDebounceSearch(search);
 
-    }, 500);
+    }, 1000);
 
     return () => clearTimeout(timer);
 
   }, [search]);
 
 
-
-  const filteredUsers = users.filter((user) =>
-
-  user.name?.toLowerCase().includes(debounceSearch.toLowerCase()) ||
-
-  user.email?.toLowerCase().includes(debounceSearch.toLowerCase()) ||
-
-  user._id?.includes(debounceSearch)
-
-);
 
 
   return (
@@ -242,7 +248,9 @@ const deleteUser = async () => {
 
         <tbody>
 
-            {filteredUsers.map((user) => (
+            {/* {filteredUsers.map((user) => ( */}
+              {users.map((user) => (
+
 
               <tr
                 key={user._id}
