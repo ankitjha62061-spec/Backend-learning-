@@ -162,15 +162,6 @@ router.put("/:id", authMiddleware, async (req, res) => {
   });
 });
 
-
-
-
-
-
-
-
-
-
 // patch
 router.patch("/:id", authMiddleware, async (req, res) => {
 

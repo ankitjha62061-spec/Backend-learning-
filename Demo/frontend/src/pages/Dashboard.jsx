@@ -71,14 +71,11 @@ const deleteUser = async () => {
       }
     );
 
-    toast.error("User deleted successfully", {
-      style: {
-        background: "white",
-        color: "red",
-      },
+   toast.success("User delete successfully", {
       autoClose: 500,
     });
 
+  
     setDeletePopup(false);
     getUsers();
 
