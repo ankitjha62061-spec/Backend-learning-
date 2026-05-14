@@ -51,12 +51,32 @@ function EditModal({
             Cancel
           </button>
 
+
+{/* 
+
           <button
             onClick={updateUser}
             className="bg-blue-500 text-white px-4 py-2 rounded-lg"
           >
             Update
-          </button>
+          </button> */}
+
+
+<button
+  onClick={updateUser}
+  disabled={!editName || !editEmail}
+  className={`text-white px-4 py-2 rounded-lg ${
+    !editName || !editEmail
+      ? "bg-blue-300 cursor-not-allowed"
+      : "bg-blue-500 hover:bg-blue-600"
+  }`}
+>
+  Update
+</button>
+
+
+
+          
 
         </div>
 

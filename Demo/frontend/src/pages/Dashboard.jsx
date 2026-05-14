@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import EditModal from "../components/EditModal";
 import DeleteModal from "../components/DeleteModal";
 import SearchBar from "../components/SearchBar";
-import { toast } from "react-toastify";
 
+import { toast } from "react-toastify";
 
 function Dashboard() {
 
@@ -28,80 +28,91 @@ function Dashboard() {
 
   const [debounceSearch, setDebounceSearch] = useState("");
 
+  const [page, setPage] = useState(1);
+
+  const [totalPages, setTotalPages] = useState(1);
+
   const navigate = useNavigate();
 
 
 
 
-const getUsers = async () => {
+  const getUsers = async () => {
 
-  try {
+    try {
 
-    const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
-    const res = await axios.get(
+      const res = await axios.get(
 
-      `http://localhost:3000/api/auth?search=${debounceSearch}`,
+        `http://localhost:3000/api/auth?search=${debounceSearch}&page=${page}`,
 
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
 
-    );
+      );
 
-    setUsers(res.data);
+      setUsers(res.data.users);
 
-  } catch (error) {
+      setTotalPages(res.data.totalPages);
 
-    console.log(error);
+    } catch (error) {
 
-  }
+      console.log(error);
 
-};
+    }
+
+  };
 
 
-const deleteUser = async () => {
 
-  try {
+ 
 
-    const token = localStorage.getItem("token");
+  const deleteUser = async () => {
 
-    await axios.delete(
+    try {
 
-      `http://localhost:3000/api/auth/${deleteId}`,
+      const token = localStorage.getItem("token");
 
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      await axios.delete(
 
-    );
+        `http://localhost:3000/api/auth/${deleteId}`,
 
-    toast.success("User deleted successfully", {
-      autoClose: 500,
-    });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
 
-    setDeletePopup(false);
+      );
 
-    getUsers();
+      toast.success("User deleted successfully", {
+        autoClose: 500,
+      });
 
-  } catch (error) {
+      setDeletePopup(false);
 
-    console.log(error);
+      getUsers();
 
-    toast.error(
+    } catch (error) {
 
-      error.response?.data?.message ||
-      "Failed to delete user"
+      console.log(error);
 
-    );
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to delete user"
+      );
 
-  }
+    }
 
-};
+  };
+
+
+
+ 
 
   const editUser = (id, name, email) => {
 
@@ -112,39 +123,58 @@ const deleteUser = async () => {
     setEditEmail(email);
 
     setIsOpen(true);
+
   };
 
 
- const updateUser = async () => {
-  try {
-    const token = localStorage.getItem("token");
 
-    await axios.put(
-      `http://localhost:3000/api/auth/${editId}`,
-      {
-        name: editName,
-        email: editEmail,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+
+  const updateUser = async () => {
+
+    try {
+
+      const token = localStorage.getItem("token");
+
+      await axios.put(
+
+        `http://localhost:3000/api/auth/${editId}`,
+
+        {
+          name: editName,
+          email: editEmail,
         },
-      }
-    );
 
-    toast.success("User updated successfully", {
-      autoClose: 500,
-    });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
 
-    setIsOpen(false);
+      );
 
-    getUsers();
+      toast.success("User updated successfully", {
+        autoClose: 500,
+      });
 
-  } catch (error) {
-    console.log(error);
-    toast.error("Failed to update user");
-  }
-};
+      setIsOpen(false);
+
+      getUsers();
+
+    } catch (error) {
+
+      console.log(error);
+
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to update user"
+      );
+
+    }
+
+  };
+
+
+
 
 
   const handleLogout = () => {
@@ -152,25 +182,22 @@ const deleteUser = async () => {
     localStorage.removeItem("token");
 
     navigate("/");
+
   };
 
-
-
-  
   useEffect(() => {
 
-  getUsers();
+    getUsers();
 
-}, [debounceSearch]);
-
-
-
+  }, [debounceSearch, page]);
 
   useEffect(() => {
 
     const timer = setTimeout(() => {
 
       setDebounceSearch(search);
+
+      setPage(1);
 
     }, 1000);
 
@@ -180,12 +207,10 @@ const deleteUser = async () => {
 
 
 
-
   return (
 
     <div className="min-h-screen bg-gray-100 p-10">
 
-     
 
       <div className="flex justify-between items-center mb-8">
 
@@ -202,22 +227,12 @@ const deleteUser = async () => {
 
       </div>
 
-
-
-
-      
-
       <div className="bg-white shadow-lg rounded-2xl p-6 overflow-x-auto">
-
-      
 
         <SearchBar
           search={search}
           setSearch={setSearch}
         />
-
-
-
 
         <table className="w-full">
 
@@ -246,11 +261,10 @@ const deleteUser = async () => {
           </thead>
 
 
-        <tbody>
 
-            {/* {filteredUsers.map((user) => ( */}
-              {users.map((user) => (
+          <tbody>
 
+            {users.map((user) => (
 
               <tr
                 key={user._id}
@@ -271,11 +285,10 @@ const deleteUser = async () => {
 
 
 
-
                 <td className="p-3 flex gap-4">
 
-
                   <button
+
                     onClick={() =>
                       editUser(
                         user._id,
@@ -283,6 +296,7 @@ const deleteUser = async () => {
                         user.email
                       )
                     }
+
                     className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
                   >
                     Edit
@@ -290,9 +304,8 @@ const deleteUser = async () => {
 
 
 
-
-
                   <button
+
                     onClick={() => {
 
                       setDeleteId(user._id);
@@ -300,6 +313,7 @@ const deleteUser = async () => {
                       setDeletePopup(true);
 
                     }}
+
                     className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
                   >
                     Delete
@@ -315,31 +329,94 @@ const deleteUser = async () => {
 
         </table>
 
+
+
+     
+
+        <div className="flex justify-center items-center gap-4 mt-6">
+
+          <button
+
+            onClick={() => setPage(page - 1)}
+
+            disabled={page === 1}
+
+            className={`px-4 py-2 rounded-lg ${page === 1
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-black text-white"
+            }`}
+          >
+            Prev
+          </button>
+
+
+
+          <p className="font-semibold">
+
+            Page {page} of {totalPages}
+
+          </p>
+
+
+
+          <button
+
+            onClick={() => setPage(page + 1)}
+
+            disabled={page === totalPages}
+
+            className={`px-4 py-2 rounded-lg ${
+              page === totalPages
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-black text-white"
+            }`}
+          >
+            Next
+          </button>
+
+        </div>
+
       </div>
 
 
 
-
+   
 
       <EditModal
+
         isOpen={isOpen}
+
         setIsOpen={setIsOpen}
+
         editName={editName}
+
         setEditName={setEditName}
+
         editEmail={editEmail}
+
         setEditEmail={setEditEmail}
+
         updateUser={updateUser}
+
       />
+
+
 
 
       <DeleteModal
+
         deletePopup={deletePopup}
+
         setDeletePopup={setDeletePopup}
+
         deleteUser={deleteUser}
+
       />
 
     </div>
+
   );
+
 }
 
 export default Dashboard;

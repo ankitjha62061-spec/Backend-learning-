@@ -105,20 +105,39 @@ router.get("/", authMiddleware, async (req, res) => {
 
   try {
 
-    const search = req.query.search || "";
+   const search = req.query.search || "";
+   const page = Number(req.query.page) || 1;
+   const limit = 3;
+   const skip = (page - 1) * limit;
 
-    
-    const users = await User.find({
+   const users = await User.find({
 
       name: {
         $regex: search,
         $options: "i",
       },
 
-    }).select("-password");
+    })
 
+      .select("-password")
+      .skip(skip)
+      .limit(limit);
 
-    res.json(users);
+     const totalUsers = await User.countDocuments({
+
+      name: {
+        $regex: search,
+        $options: "i",
+      },
+
+    });
+
+    res.json({
+     users,
+    currentPage: page,
+     totalPages: Math.ceil(totalUsers / limit),
+
+    });
 
   } catch (error) {
 
@@ -131,6 +150,7 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 
 });
+
 
 
 
@@ -155,8 +175,6 @@ router.post("/", authMiddleware, async (req, res) => {
     user: newUser,
   });
 });
-
-
 
 router.put("/:id", authMiddleware, async (req, res) => {
 
@@ -185,7 +203,6 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
     }
 
-
     const updatedUser = await User.findByIdAndUpdate(
 
       userId,
@@ -209,7 +226,6 @@ router.put("/:id", authMiddleware, async (req, res) => {
       });
 
     }
-
 
     res.json({
 
