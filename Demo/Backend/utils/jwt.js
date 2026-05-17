@@ -10,7 +10,7 @@ const createToken = (user) => {
     },
     SECRET,
     {
-      expiresIn: "20min",
+      expiresIn: "1day",
     }
   );
 };

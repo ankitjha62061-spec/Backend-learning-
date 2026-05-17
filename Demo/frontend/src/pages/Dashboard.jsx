@@ -329,10 +329,6 @@ function Dashboard() {
 
         </table>
 
-
-
-     
-
         <div className="flex justify-center items-center gap-4 mt-6">
 
           <button
@@ -349,15 +345,11 @@ function Dashboard() {
             Prev
           </button>
 
-
-
           <p className="font-semibold">
 
             Page {page} of {totalPages}
 
           </p>
-
-
 
           <button
 
@@ -377,10 +369,6 @@ function Dashboard() {
         </div>
 
       </div>
-
-
-
-   
 
       <EditModal
 
