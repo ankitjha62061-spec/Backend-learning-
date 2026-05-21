@@ -7,14 +7,13 @@ function Sidebar() {
   const handleLogout = () => {
 
     localStorage.removeItem("token");
-
-    navigate("/");
+      navigate("/");
 
   };
 
   return (
 
-    <div className="w-64 h-screen bg-blue-500 text-white fixed left-0 top-0 p-5">
+    <div className="w-64 h-screen bg-gray-500 text-white fixed left-0 top-0 p-5">
 
       {/* <h1 className="text-3xl font-bold mb-10">
 

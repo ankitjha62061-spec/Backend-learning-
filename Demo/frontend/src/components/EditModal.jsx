@@ -63,8 +63,7 @@ function EditModal({
 
 
 <button
-  onClick={updateUser}
-  disabled={!editName || !editEmail}
+  onClick={updateUser} disabled={!editName || !editEmail}
   className={`text-white px-4 py-2 rounded-lg ${
     !editName || !editEmail
       ? "bg-blue-300 cursor-not-allowed"

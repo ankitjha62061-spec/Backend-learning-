@@ -11,10 +11,8 @@ import SearchBar from "../components/SearchBar";
 import { toast } from "react-toastify";
 
 function Dashboard() {
-
-  const [users, setUsers] = useState([]);
-
-  const [isOpen, setIsOpen] = useState(false);
+const [users, setUsers] = useState([]);
+ const [isOpen, setIsOpen] = useState(false);
 
   const [editId, setEditId] = useState("");
 
@@ -205,12 +203,8 @@ useEffect(() => {
           setSearch={setSearch}
         />
 
-
-
-
         <table className="w-full">
-
-          <thead>
+            <thead>
 
             <tr className="border-b">
 
@@ -233,76 +227,58 @@ useEffect(() => {
             </tr>
 
           </thead>
+           <tbody>
+  {users.length > 0 ? (
+    users.map((user) => (
+      <tr  key={user._id}
+        className="border-b"
+      >
 
 
 
+        <td className="p-3">{user._id}</td>
 
-          <tbody>
+        <td className="p-3">{user.name}</td>
 
-            {users.map((user) => (
+        <td className="p-3">{user.email}</td>
 
-              <tr
-                key={user._id}
-                className="border-b"
-              >
+        <td className="p-3 flex gap-4">
+          <button
+            onClick={() =>
+              editUser(
+                user._id,
+                user.name,
+                user.email
+              )
+            }
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
+          >
+            Edit
+          </button>
 
-                <td className="p-3">
-                  {user._id}
-                </td>
-
-                <td className="p-3">
-                  {user.name}
-                </td>
-
-                <td className="p-3">
-                  {user.email}
-                </td>
-
-
-
-
-                <td className="p-3 flex gap-4">
-
-                  <button
-
-                    onClick={() =>
-                      editUser(
-                        user._id,
-                        user.name,
-                        user.email
-                      )
-                    }
-
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
-                  >
-                    Edit
-                  </button>
-
-
-
-
-                  <button
-
-                    onClick={() => {
-
-                      setDeleteId(user._id);
-
-                      setDeletePopup(true);
-
-                    }}
-
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
-                  >
-                    Delete
-                  </button>
-
-                </td>
-
-              </tr>
-
-            ))}
-
-          </tbody>
+          <button
+            onClick={() => {
+              setDeleteId(user._id);
+              setDeletePopup(true);
+            }}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td
+        colSpan="4"
+        className="text-center py-8 text-gray-500 font-semibold"
+      >
+        Not Found 
+      </td>
+    </tr>
+  )}
+</tbody>
 
         </table>
 
