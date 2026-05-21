@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 import EditModal from "../components/EditModal";
+
 import DeleteModal from "../components/DeleteModal";
+
 import SearchBar from "../components/SearchBar";
 
 import { toast } from "react-toastify";
@@ -32,12 +34,7 @@ function Dashboard() {
 
   const [totalPages, setTotalPages] = useState(1);
 
-  const navigate = useNavigate();
-
-
-
-
-  const getUsers = async () => {
+    const getUsers = async () => {
 
     try {
 
@@ -66,12 +63,7 @@ function Dashboard() {
     }
 
   };
-
-
-
- 
-
-  const deleteUser = async () => {
+    const deleteUser = async () => {
 
     try {
 
@@ -111,10 +103,7 @@ function Dashboard() {
   };
 
 
-
- 
-
-  const editUser = (id, name, email) => {
+   const editUser = (id, name, email) => {
 
     setEditId(id);
 
@@ -127,9 +116,7 @@ function Dashboard() {
   };
 
 
-
-
-  const updateUser = async () => {
+    const updateUser = async () => {
 
     try {
 
@@ -174,24 +161,14 @@ function Dashboard() {
   };
 
 
-
-
-
-  const handleLogout = () => {
-
-    localStorage.removeItem("token");
-
-    navigate("/");
-
-  };
-
-  useEffect(() => {
+useEffect(() => {
 
     getUsers();
 
   }, [debounceSearch, page]);
 
-  useEffect(() => {
+
+useEffect(() => {
 
     const timer = setTimeout(() => {
 
@@ -206,33 +183,30 @@ function Dashboard() {
   }, [search]);
 
 
+ return (
 
-  return (
+    <div>
 
-    <div className="min-h-screen bg-gray-100 p-10">
-
-
-      <div className="flex justify-between items-center mb-8">
+      <div className="mb-8">
 
         <h1 className="text-4xl font-bold">
-          Dashboard
-        </h1>
 
-        <button
-          onClick={handleLogout}
-          className="bg-black text-white px-5 py-2 rounded-lg"
-        >
-          Logout
-        </button>
+          Dashboard
+
+        </h1>
 
       </div>
 
-      <div className="bg-white shadow-lg rounded-2xl p-6 overflow-x-auto">
+
+  <div className="bg-white shadow-lg rounded-2xl p-6 overflow-x-auto">
 
         <SearchBar
           search={search}
           setSearch={setSearch}
         />
+
+
+
 
         <table className="w-full">
 
@@ -262,6 +236,7 @@ function Dashboard() {
 
 
 
+
           <tbody>
 
             {users.map((user) => (
@@ -285,6 +260,7 @@ function Dashboard() {
 
 
 
+
                 <td className="p-3 flex gap-4">
 
                   <button
@@ -301,6 +277,7 @@ function Dashboard() {
                   >
                     Edit
                   </button>
+
 
 
 
@@ -329,6 +306,9 @@ function Dashboard() {
 
         </table>
 
+
+
+
         <div className="flex justify-center items-center gap-4 mt-6">
 
           <button
@@ -337,7 +317,8 @@ function Dashboard() {
 
             disabled={page === 1}
 
-            className={`px-4 py-2 rounded-lg ${page === 1
+            className={`px-4 py-2 rounded-lg ${
+              page === 1
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-black text-white"
             }`}
@@ -345,11 +326,17 @@ function Dashboard() {
             Prev
           </button>
 
+
+
+
           <p className="font-semibold">
 
             Page {page} of {totalPages}
 
           </p>
+
+
+
 
           <button
 
@@ -369,6 +356,9 @@ function Dashboard() {
         </div>
 
       </div>
+
+
+
 
       <EditModal
 
