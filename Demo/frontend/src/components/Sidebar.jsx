@@ -1,45 +1,48 @@
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function Sidebar() {
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
-
     localStorage.removeItem("token");
-      navigate("/");
-
+    navigate("/");
   };
 
   return (
 
     <div className="w-64 h-screen bg-gray-500 text-white fixed left-0 top-0 p-5">
 
-      {/* <h1 className="text-3xl font-bold mb-10">
-
-    Products Page
-
-      </h1> */}
-
       <div className="flex flex-col gap-4">
 
-        <Link
-          to="/dashboard"
-          className="hover:bg-gray-800 p-3 rounded-lg"
+        <NavLink  to="/dashboard" end
+          className={({ isActive }) =>
+            `p-3 rounded-lg transition-all duration-200 ${
+              isActive
+                ? "bg-gray-900 text-white"
+                : "hover:bg-gray-800"
+            }`
+          }
         >
           Dashboard
-        </Link>
+        </NavLink>
 
-        <Link
+        <NavLink
           to="/dashboard/products"
-          className="hover:bg-gray-800 p-3 rounded-lg"
+          className={({ isActive }) =>
+            `p-3 rounded-lg transition-all duration-200 ${ isActive
+                ? "bg-gray-900 text-white"
+                : "hover:bg-gray-800"
+            }`
+          }
         >
           Products
-        </Link>
+        </NavLink>
 
+     
         <button
           onClick={handleLogout}
-          className="bg-red-500 p-3 rounded-lg mt-10"
+          className="bg-red-500 hover:bg-red-600 p-3 rounded-lg mt-10 transition-all duration-200"
         >
           Logout
         </button>
@@ -49,7 +52,6 @@ function Sidebar() {
     </div>
 
   );
-
 }
 
 export default Sidebar;
