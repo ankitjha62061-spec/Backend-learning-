@@ -14,26 +14,37 @@ function Products() {
   const [deleteModal, setDeleteModal] = useState(false);
 
   const [deleteId, setDeleteId] = useState(null);
+
   const [page, setPage] = useState(1);
+
+  const [search, setSearch] = useState("");
 
   const productsPerPage = 5;
 
   const lastProductIndex = page * productsPerPage;
 
-  const firstProductIndex = lastProductIndex - productsPerPage;
+  const firstProductIndex =
+    lastProductIndex - productsPerPage;
 
-  const currentProducts = products.slice(firstProductIndex,lastProductIndex);
+  const currentProducts = products.slice(
+    firstProductIndex,
+    lastProductIndex
+  );
 
   const totalPages = Math.ceil(
     products.length / productsPerPage
   );
 
-  const fetchProducts = async () => {
+
+
+  const fetchProducts = async (
+    searchText = ""
+  ) => {
 
     try {
 
       const res = await axios.get(
-        "http://localhost:3000/api/products"
+        `http://localhost:3000/api/products?search=${searchText}`
       );
 
       setProducts(res.data.products);
@@ -44,12 +55,19 @@ function Products() {
 
     }
   };
-
   useEffect(() => {
 
-    fetchProducts();
+    const timer = setTimeout(() => {
 
-  }, []);
+      fetchProducts(search);
+
+    }, 500);
+
+    return () => clearTimeout(timer);
+
+  }, [search]);
+
+
 
   const openAddModal = () => {
 
@@ -103,7 +121,7 @@ function Products() {
 
       setEditData(null);
 
-      fetchProducts();
+      fetchProducts(search);
 
     } catch (error) {
 
@@ -111,6 +129,7 @@ function Products() {
 
     }
   };
+
 
   const openDeleteModal = (id) => {
 
@@ -134,7 +153,7 @@ function Products() {
 
       setDeleteId(null);
 
-      fetchProducts();
+      fetchProducts(search);
 
     } catch (error) {
 
@@ -151,6 +170,17 @@ function Products() {
         Products Page
       </h1>
 
+      <input
+        type="text"
+        placeholder="Search products..."
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setPage(1);
+        }}
+        className="border p-3 rounded-lg w-full mb-4 outline-none"
+      />
+
       <button
         onClick={openAddModal}
         className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
@@ -158,7 +188,6 @@ function Products() {
         + Add Product
       </button>
 
-   
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
 
         <table className="w-full border-collapse">
@@ -246,9 +275,7 @@ function Products() {
 
       </div>
 
-     
       <div className="flex justify-center items-center gap-4 mt-6">
-
 
         <button
           onClick={() => setPage(page - 1)}
@@ -261,6 +288,7 @@ function Products() {
         >
           Prev
         </button>
+
 
         <p className="font-semibold">
           Page {page} of {totalPages}
@@ -280,7 +308,7 @@ function Products() {
 
       </div>
 
-    
+
       <ProductModal
         open={openModal}
         onClose={() => setOpenModal(false)}
@@ -288,7 +316,8 @@ function Products() {
         editData={editData}
       />
 
-    
+
+
       {deleteModal && (
 
         <div className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm">
@@ -313,6 +342,8 @@ function Products() {
               >
                 Cancel
               </button>
+
+
 
               <button
                 onClick={confirmDelete}
