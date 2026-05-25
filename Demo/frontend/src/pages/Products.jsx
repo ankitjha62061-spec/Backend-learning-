@@ -97,13 +97,22 @@ function Products() {
 
       formData.append("name", data.name);
       formData.append("price", data.price);
-      
-      if (data.quantity !== undefined && data.quantity !== null) {
-        formData.append("quantity", data.quantity);
+
+      if (
+        data.quantity !== undefined &&
+        data.quantity !== null
+      ) {
+        formData.append(
+          "quantity",
+          data.quantity
+        );
       }
 
       if (data.image) {
-        formData.append("image", data.image);
+        formData.append(
+          "image",
+          data.image
+        );
       }
 
       if (editData) {
@@ -202,6 +211,10 @@ function Products() {
             <tr>
 
               <th className="p-4 text-left">
+                Image
+              </th>
+
+              <th className="p-4 text-left">
                 Product
               </th>
 
@@ -224,7 +237,7 @@ function Products() {
               <tr>
 
                 <td
-                  colSpan="3"
+                  colSpan="4"
                   className="p-4 text-gray-500 text-center"
                 >
                   No products found
@@ -242,6 +255,15 @@ function Products() {
                 >
 
                   <td className="p-4">
+
+                    <img  src={`http://localhost:3000/uploads/${item.image}`}
+                      alt={item.name}
+                      className="w-20 h-20 object-cover rounded"
+                    />
+
+                  </td>
+
+                  <td className="p-4">
                     {item.name}
                   </td>
 
@@ -252,7 +274,9 @@ function Products() {
                   <td className="p-4 flex gap-4">
 
                     <button
-                      onClick={() => handleEdit(item)}
+                      onClick={() =>
+                        handleEdit(item)
+                      }
                       className="bg-green-500 text-white px-3 py-1 rounded"
                     >
                       Edit
@@ -300,9 +324,13 @@ function Products() {
 
         <button
           onClick={() => setPage(page + 1)}
-          disabled={page === totalPages || totalPages === 0}
+          disabled={
+            page === totalPages ||
+            totalPages === 0
+          }
           className={`px-4 py-2 rounded-lg ${
-            page === totalPages || totalPages === 0
+            page === totalPages ||
+            totalPages === 0
               ? "bg-gray-300 cursor-not-allowed"
               : "bg-black text-white"
           }`}
@@ -311,13 +339,15 @@ function Products() {
         </button>
 
       </div>
+
       <ProductModal
         open={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={() =>
+          setOpenModal(false)
+        }
         onSave={handleSave}
         editData={editData}
       />
-
 
       {deleteModal && (
 
