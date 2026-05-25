@@ -19,6 +19,8 @@ function Products() {
 
   const [search, setSearch] = useState("");
 
+  const [selectedImage, setSelectedImage] = useState(null);
+
   const productsPerPage = 5;
 
   const lastProductIndex = page * productsPerPage;
@@ -256,10 +258,10 @@ function Products() {
 
                   <td className="p-4">
 
-                    <img  src={`http://localhost:3000/uploads/${item.image}`}
-                      alt={item.name}
-                      className="w-20 h-20 object-cover rounded"
-                    />
+                    <img src={`http://localhost:3000/uploads/${item.image}`}
+                      alt={item.name} className="w-20 h-20 object-cover rounded cursor-pointer"
+                      onClick= {() => setSelectedImage(item.image) }
+                   />
 
                   </td>
 
@@ -348,6 +350,23 @@ function Products() {
         onSave={handleSave}
         editData={editData}
       />
+
+
+{/* 
+
+{selectedImage && (
+  <div  className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+    onClick={() => setSelectedImage(null)}
+  >
+    <img
+      src={`http://localhost:3000/uploads/${selectedImage}`}
+      className="max-w-[90%] max-h-[90%] rounded-lg shadow-xl"
+      onClick={(e) => e.stopPropagation()}
+    />
+  </div>
+)} */}
+
+
 
       {deleteModal && (
 
