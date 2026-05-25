@@ -18,9 +18,6 @@ exports.addProduct = async (req, res) => {
   }
 };
 
-
-
-
 exports.getProducts = async (req, res) => {
 
   try {
@@ -49,6 +46,8 @@ exports.getProducts = async (req, res) => {
   }
 };
 
+
+
 exports.deleteProduct = async (req, res) => {
 
   try {
@@ -71,6 +70,8 @@ exports.deleteProduct = async (req, res) => {
 
   }
 };
+
+
 
 exports.updateProduct = async (req, res) => {
 
