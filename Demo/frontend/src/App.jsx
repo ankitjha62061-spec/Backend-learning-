@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
@@ -21,44 +20,27 @@ function App() {
     <>
      <Routes>
 
-        <Route
-          path="/"
-          element={<Login />}
-        />
+        <Route path="/" element={<Login />}/>
 
-        <Route
-          path="/signup"
-          element={<Signup />}
-        />
+        <Route path="/signup"element={<Signup />} />
 
-         <Route
-          path="/dashboard"
-          element={
+         <Route path="/dashboard"element={
             <ProtectedRoute>
               <DashboardLayout />
             </ProtectedRoute>
           }
         >
 
-          <Route
-            index
-            element={<Dashboard />}
-          />
+          <Route index element={<Dashboard />}/>
 
-          <Route
-            path="products"
-            element={<Products />}
-          />
+          <Route   path="products"element={<Products />}/>
 
         </Route>
 
 
 
 
-        <Route
-          path="/profile"
-          element={<Profile />}
-        />
+        <Route  path="/profile"element={<Profile />} />
 
       </Routes>
 

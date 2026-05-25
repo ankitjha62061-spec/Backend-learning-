@@ -3,14 +3,17 @@ import { useState, useEffect } from "react";
 function ProductModal({ open, onClose, onSave, editData }) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     if (editData) {
       setName(editData.name || "");
       setPrice(editData.price || "");
+      setImage(null);
     } else {
       setName("");
       setPrice("");
+      setImage(null);
     }
   }, [editData, open]);
 
@@ -33,12 +36,24 @@ function ProductModal({ open, onClose, onSave, editData }) {
           className="border p-2 w-full mb-3 rounded"
         />
 
-        <input type="number" placeholder="Price" value={price} min="0"
+        <input
+          type="number"
+          placeholder="Price"
+          value={price}
+          min="0"
           onChange={(e) => setPrice(e.target.value)}
-          className="border p-2 w-full mb-4 rounded"/>
+          className="border p-2 w-full mb-4 rounded"
+        />
 
- 
+      
+        <input
+          type="file"
+          onChange={(e) => setImage(e.target.files[0])}
+          className="border p-2 w-full mb-4 rounded"
+        />
+
         <div className="flex justify-between">
+
           <button
             onClick={onClose}
             className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg"
@@ -47,7 +62,7 @@ function ProductModal({ open, onClose, onSave, editData }) {
           </button>
 
           <button
-            onClick={() => onSave({ name, price })}
+            onClick={() => onSave({ name, price, image })}
             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
           >
             {editData ? "Update" : "Save"}

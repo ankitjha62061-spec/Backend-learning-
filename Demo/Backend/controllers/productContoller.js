@@ -1,28 +1,38 @@
 const Product = require("../models/Product");
 
 exports.addProduct = async (req, res) => {
-
   try {
-      const product =
-      await Product.create(req.body);
-     res.status(201).json(product);
+    const product = await Product.create({
+      name: req.body.name,
+      price: req.body.price,
+      quantity: req.body.quantity || 0,
+      image: req.file ? req.file.filename : "",
+    });
 
+    res.status(201).json(product);
   } catch (error) {
-
     console.log(error);
-
     res.status(500).json({
       message: error.message,
     });
-
   }
 };
+
+
+
+
 exports.getProducts = async (req, res) => {
 
   try {
 
-    const products =
-      await Product.find();
+    const search = req.query.search || "";
+
+    const products = await Product.find({
+      name: {
+        $regex: search,
+        $options: "i",
+      },
+    });
 
     res.json({
       products,
@@ -66,10 +76,15 @@ exports.updateProduct = async (req, res) => {
 
   try {
 
+    const updateData = { ...req.body };
+    if (req.file) {
+      updateData.image = req.file.filename;
+    }
+
     const updatedProduct =
       await Product.findByIdAndUpdate(
         req.params.id,
-        req.body,
+        updateData,
         { new: true }
       );
 

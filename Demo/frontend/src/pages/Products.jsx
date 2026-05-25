@@ -35,8 +35,6 @@ function Products() {
     products.length / productsPerPage
   );
 
-
-
   const fetchProducts = async (
     searchText = ""
   ) => {
@@ -55,6 +53,7 @@ function Products() {
 
     }
   };
+
   useEffect(() => {
 
     const timer = setTimeout(() => {
@@ -66,8 +65,6 @@ function Products() {
     return () => clearTimeout(timer);
 
   }, [search]);
-
-
 
   const openAddModal = () => {
 
@@ -94,14 +91,26 @@ function Products() {
         toast.warning("Please fill all fields");
 
         return;
+      }
 
+      const formData = new FormData();
+
+      formData.append("name", data.name);
+      formData.append("price", data.price);
+      
+      if (data.quantity !== undefined && data.quantity !== null) {
+        formData.append("quantity", data.quantity);
+      }
+
+      if (data.image) {
+        formData.append("image", data.image);
       }
 
       if (editData) {
 
         await axios.put(
           `http://localhost:3000/api/products/${editData._id}`,
-          data
+          formData
         );
 
         toast.success("Product updated");
@@ -110,11 +119,10 @@ function Products() {
 
         await axios.post(
           "http://localhost:3000/api/products",
-          data
+          formData
         );
 
         toast.success("Product added");
-
       }
 
       setOpenModal(false);
@@ -129,7 +137,6 @@ function Products() {
 
     }
   };
-
 
   const openDeleteModal = (id) => {
 
@@ -150,8 +157,6 @@ function Products() {
       toast.success("Product deleted");
 
       setDeleteModal(false);
-
-      setDeleteId(null);
 
       fetchProducts(search);
 
@@ -289,16 +294,15 @@ function Products() {
           Prev
         </button>
 
-
         <p className="font-semibold">
-          Page {page} of {totalPages}
+          Page {page} of {totalPages || 1}
         </p>
 
         <button
           onClick={() => setPage(page + 1)}
-          disabled={page === totalPages}
+          disabled={page === totalPages || totalPages === 0}
           className={`px-4 py-2 rounded-lg ${
-            page === totalPages
+            page === totalPages || totalPages === 0
               ? "bg-gray-300 cursor-not-allowed"
               : "bg-black text-white"
           }`}
@@ -307,15 +311,12 @@ function Products() {
         </button>
 
       </div>
-
-
       <ProductModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         onSave={handleSave}
         editData={editData}
       />
-
 
 
       {deleteModal && (
@@ -329,7 +330,7 @@ function Products() {
             </h2>
 
             <p className="text-gray-600 mb-5">
-              Are you sure to delete
+              Are you sure to delete?
             </p>
 
             <div className="flex justify-between">
@@ -342,8 +343,6 @@ function Products() {
               >
                 Cancel
               </button>
-
-
 
               <button
                 onClick={confirmDelete}
