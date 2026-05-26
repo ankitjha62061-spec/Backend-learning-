@@ -10,6 +10,8 @@ const authRoutes =
 const productRoutes =
   require("./routes/productRoutes");
 
+  const cartRoutes = require ("./routes/cartRoutes");
+
 const app = express();
  app.use(cors());
  app.use(express.json());
@@ -26,6 +28,9 @@ mongoose.connect(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+
+app.use("/api/cart", cartRoutes);
+
 app.listen(3000, () => {
   console.log("Server Running");
 });

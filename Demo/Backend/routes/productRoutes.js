@@ -11,7 +11,7 @@ const {
   getProducts,
   deleteProduct,
   updateProduct,
-} = require("../controllers/productContoller");
+} = require("../controllers/productController");
 
 router.post("/",authMiddleware,   upload.single("image"), addProduct);
 router.get("/", getProducts);
