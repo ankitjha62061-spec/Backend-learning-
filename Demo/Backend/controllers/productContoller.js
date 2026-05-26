@@ -7,6 +7,7 @@ exports.addProduct = async (req, res) => {
       price: req.body.price,
       quantity: req.body.quantity || 0,
       image: req.file ? req.file.filename : "",
+      userId: req.user.id,            
     });
 
     res.status(201).json(product);

@@ -37,6 +37,10 @@ function Products() {
     products.length / productsPerPage
   );
 
+
+
+
+
   const fetchProducts = async (
     searchText = ""
   ) => {
@@ -51,10 +55,14 @@ function Products() {
 
     } catch (error) {
 
+      console.log(error);
+
       toast.error("Failed to fetch products");
 
     }
   };
+
+
 
   useEffect(() => {
 
@@ -68,6 +76,9 @@ function Products() {
 
   }, [search]);
 
+
+
+
   const openAddModal = () => {
 
     setEditData(null);
@@ -76,6 +87,10 @@ function Products() {
 
   };
 
+
+
+
+
   const handleEdit = (item) => {
 
     setEditData(item);
@@ -83,6 +98,10 @@ function Products() {
     setOpenModal(true);
 
   };
+
+
+
+ 
 
   const handleSave = async (data) => {
 
@@ -95,15 +114,19 @@ function Products() {
         return;
       }
 
+      const token = localStorage.getItem("token");
+
       const formData = new FormData();
 
       formData.append("name", data.name);
+
       formData.append("price", data.price);
 
       if (
         data.quantity !== undefined &&
         data.quantity !== null
       ) {
+
         formData.append(
           "quantity",
           data.quantity
@@ -111,26 +134,53 @@ function Products() {
       }
 
       if (data.image) {
+
         formData.append(
           "image",
           data.image
         );
       }
 
+
+
+      // UPDATE PRODUCT
+
       if (editData) {
 
         await axios.put(
+
           `http://localhost:3000/api/products/${editData._id}`,
-          formData
+
+          formData,
+
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+
         );
 
         toast.success("Product updated");
 
       } else {
 
+
+
+        // ADD PRODUCT
+
         await axios.post(
+
           "http://localhost:3000/api/products",
-          formData
+
+          formData,
+
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+
         );
 
         toast.success("Product added");
@@ -144,10 +194,19 @@ function Products() {
 
     } catch (error) {
 
-      toast.error("Something went wrong");
+      console.log(error);
+
+      toast.error(
+        error.response?.data?.message ||
+        "Something went wrong"
+      );
 
     }
   };
+
+
+
+
 
   const openDeleteModal = (id) => {
 
@@ -157,12 +216,24 @@ function Products() {
 
   };
 
+
+
   const confirmDelete = async () => {
 
     try {
 
+      const token = localStorage.getItem("token");
+
       await axios.delete(
-        `http://localhost:3000/api/products/${deleteId}`
+
+        `http://localhost:3000/api/products/${deleteId}`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+
       );
 
       toast.success("Product deleted");
@@ -173,10 +244,14 @@ function Products() {
 
     } catch (error) {
 
+      console.log(error);
+
       toast.error("Delete failed");
 
     }
   };
+
+
 
   return (
 
@@ -185,6 +260,8 @@ function Products() {
       <h1 className="text-3xl font-bold mb-6">
         Products Page
       </h1>
+
+
 
       <input
         type="text"
@@ -197,12 +274,16 @@ function Products() {
         className="border p-3 rounded-lg w-full mb-4 outline-none"
       />
 
+
+
       <button
         onClick={openAddModal}
         className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
       >
         + Add Product
       </button>
+
+
 
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
 
@@ -232,6 +313,8 @@ function Products() {
 
           </thead>
 
+
+
           <tbody>
 
             {currentProducts.length === 0 ? (
@@ -258,10 +341,14 @@ function Products() {
 
                   <td className="p-4">
 
-                    <img src={`http://localhost:3000/uploads/${item.image}`}
-                      alt={item.name} className="w-20 h-20 object-cover rounded cursor-pointer"
-                      onClick= {() => setSelectedImage(item.image) }
-                   />
+                    <img
+                      src={`http://localhost:3000/uploads/${item.image}`}
+                      alt={item.name}
+                      className="w-20 h-20 object-cover rounded cursor-pointer"
+                      onClick={() =>
+                        setSelectedImage(item.image)
+                      }
+                    />
 
                   </td>
 
@@ -283,6 +370,8 @@ function Products() {
                     >
                       Edit
                     </button>
+
+
 
                     <button
                       onClick={() =>
@@ -306,6 +395,8 @@ function Products() {
 
       </div>
 
+
+
       <div className="flex justify-center items-center gap-4 mt-6">
 
         <button
@@ -320,9 +411,13 @@ function Products() {
           Prev
         </button>
 
+
+
         <p className="font-semibold">
           Page {page} of {totalPages || 1}
         </p>
+
+
 
         <button
           onClick={() => setPage(page + 1)}
@@ -342,6 +437,8 @@ function Products() {
 
       </div>
 
+
+
       <ProductModal
         open={openModal}
         onClose={() =>
@@ -352,19 +449,26 @@ function Products() {
       />
 
 
-{/* 
 
-{selectedImage && (
-  <div  className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
-    onClick={() => setSelectedImage(null)}
-  >
-    <img
-      src={`http://localhost:3000/uploads/${selectedImage}`}
-      className="max-w-[90%] max-h-[90%] rounded-lg shadow-xl"
-      onClick={(e) => e.stopPropagation()}
-    />
-  </div>
-)} */}
+      {selectedImage && (
+
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+          onClick={() =>
+            setSelectedImage(null)
+          }
+        >
+
+          <img
+            src={`http://localhost:3000/uploads/${selectedImage}`}
+            className="max-w-[90%] max-h-[90%] rounded-lg shadow-xl"
+            onClick={(e) =>
+              e.stopPropagation()
+            }
+          />
+
+        </div>
+      )}
 
 
 
@@ -392,6 +496,8 @@ function Products() {
               >
                 Cancel
               </button>
+
+
 
               <button
                 onClick={confirmDelete}

@@ -1,7 +1,10 @@
 const express = require("express");
 
 const router = express.Router();
-const upload = require ("../middleware/multer")
+
+const upload = require("../middleware/multer");
+
+const authMiddleware = require("../middleware/authMiddleware");
 
 const {
   addProduct,
@@ -10,9 +13,10 @@ const {
   updateProduct,
 } = require("../controllers/productContoller");
 
-router.post("/", upload.single("image"), addProduct);
+router.post("/",authMiddleware,   upload.single("image"), addProduct);
 router.get("/", getProducts);
-router.delete("/:id", deleteProduct);
-router.put("/:id", upload.single("image"), updateProduct);
 
-module.exports = router;  
+router.delete("/:id",authMiddleware, deleteProduct);
+router.put("/:id",authMiddleware,upload.single("image"),updateProduct);
+
+module.exports = router;
