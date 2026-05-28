@@ -40,6 +40,19 @@ function Sidebar() {
         </NavLink>
 
      
+  <NavLink
+          to="/dashboard/cart"
+          className={({ isActive }) =>
+            `p-3 rounded-lg transition-all duration-200 ${
+              isActive
+                ? "bg-gray-900 text-white"
+                : "hover:bg-gray-800"
+            }`
+          }
+        >
+          Cart
+        </NavLink>
+
         <button
           onClick={handleLogout}
           className="bg-red-500 hover:bg-red-600 p-3 rounded-lg mt-10 transition-all duration-200"

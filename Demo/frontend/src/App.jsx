@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
+import CartPage from "./pages/CartPage";
 import Profile from "./pages/Profile";
 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -31,16 +32,12 @@ function App() {
           }
         >
 
-          <Route index element={<Dashboard />}/>
+ <Route index element={<Dashboard />}/>
+ <Route   path="products"element={<Products />}/>
+ <Route   path="cart" element={<CartPage />}/>
 
-          <Route   path="products"element={<Products />}/>
-
-        </Route>
-
-
-
-
-        <Route  path="/profile"element={<Profile />} />
+ </Route>
+  <Route  path="/profile"element={<Profile />} />
 
       </Routes>
 
