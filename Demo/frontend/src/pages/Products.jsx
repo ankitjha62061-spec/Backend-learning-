@@ -37,16 +37,11 @@ function Products() {
     products.length / productsPerPage
   );
 
-
-
-
-
   const fetchProducts = async (
     searchText = ""
   ) => {
 
     try {
-
       const res = await axios.get(
         `http://localhost:3000/api/products?search=${searchText}`
       );
@@ -62,8 +57,6 @@ function Products() {
     }
   };
 
-
-
   useEffect(() => {
 
     const timer = setTimeout(() => {
@@ -76,8 +69,38 @@ function Products() {
 
   }, [search]);
 
+  const handleAddToCart = async (productId) => {
 
+    try {
 
+      const token = localStorage.getItem("token");
+
+      const res = await axios.post(
+
+        "http://localhost:3000/api/cart",
+
+        {
+          productId: productId,
+        },
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+
+      );
+
+      toast.success(res.data.message);
+
+    } catch (error) {
+
+      console.log(error);
+
+      toast.error("Failed to add to cart");
+
+    }
+  };
 
   const openAddModal = () => {
 
@@ -86,11 +109,6 @@ function Products() {
     setOpenModal(true);
 
   };
-
-
-
-
-
   const handleEdit = (item) => {
 
     setEditData(item);
@@ -99,9 +117,6 @@ function Products() {
 
   };
 
-
-
- 
 
   const handleSave = async (data) => {
 
@@ -141,10 +156,6 @@ function Products() {
         );
       }
 
-
-
-      // UPDATE PRODUCT
-
       if (editData) {
 
         await axios.put(
@@ -164,10 +175,6 @@ function Products() {
         toast.success("Product updated");
 
       } else {
-
-
-
-        // ADD PRODUCT
 
         await axios.post(
 
@@ -204,10 +211,6 @@ function Products() {
     }
   };
 
-
-
-
-
   const openDeleteModal = (id) => {
 
     setDeleteId(id);
@@ -215,8 +218,6 @@ function Products() {
     setDeleteModal(true);
 
   };
-
-
 
   const confirmDelete = async () => {
 
@@ -364,6 +365,17 @@ function Products() {
 
                     <button
                       onClick={() =>
+                        handleAddToCart(item._id)
+                      }
+                      className="bg-blue-500 text-white px-3 py-1 rounded"
+                    >
+                      Add To Cart
+                    </button>
+
+
+
+                    <button
+                      onClick={() =>
                         handleEdit(item)
                       }
                       className="bg-green-500 text-white px-3 py-1 rounded"
@@ -469,9 +481,6 @@ function Products() {
 
         </div>
       )}
-
-
-
       {deleteModal && (
 
         <div className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm">
@@ -496,8 +505,6 @@ function Products() {
               >
                 Cancel
               </button>
-
-
 
               <button
                 onClick={confirmDelete}

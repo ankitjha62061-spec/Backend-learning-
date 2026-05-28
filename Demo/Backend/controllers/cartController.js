@@ -20,6 +20,8 @@ exports.addToCart = async (req, res) => {
         cart: existingItem
       });
     }
+
+
    
     const cartItem = await Cart.create({
       userId,
@@ -36,8 +38,7 @@ exports.addToCart = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-
+``
 
 exports.getCart = async (req, res) => {
   try {

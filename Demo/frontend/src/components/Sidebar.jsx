@@ -15,7 +15,7 @@ function Sidebar() {
 
       <div className="flex flex-col gap-4">
 
-        <NavLink  to="/dashboard" end
+        <NavLink to="/dashboard" end
           className={({ isActive }) =>
             `p-3 rounded-lg transition-all duration-200 ${
               isActive
