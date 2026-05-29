@@ -8,9 +8,7 @@ function CartPage() {
 
   const fetchCart = async () => {
 
-    try {
-
-      const token = localStorage.getItem("token");
+    try { const token = localStorage.getItem("token");
 
       const res = await axios.get(
         "http://localhost:3000/api/cart",
@@ -31,11 +29,7 @@ function CartPage() {
   };
 
   const handleRemove = async (cartItemId) => {
-
-    try {
-
-      const token = localStorage.getItem("token");
-
+    try {const token = localStorage.getItem("token");
       await axios.delete(
         `http://localhost:3000/api/cart/${cartItemId}`,
         {
@@ -46,11 +40,13 @@ function CartPage() {
       );
 
       toast.success("Item removed");
+
       fetchCart();
 
     } catch (error) {
 
       console.log(error);
+
       toast.error("Failed to remove item");
 
     }
@@ -85,28 +81,21 @@ function CartPage() {
               key={item._id}
               className="border p-4 mb-4 rounded-lg flex gap-4 items-center"
             >
-
-              <img
-                src={`http://localhost:3000/uploads/${item.productId.image}`}
-                alt=""
+             <img src={`http://localhost:3000/uploads/products/${item?.productId?.image}`} alt=""
                 className="w-24 h-24 object-cover rounded"
               />
-
-              <div>
-
-                <h2 className="text-xl font-bold">
-                  {item.productId.name}
+              <div><h2 className="text-xl font-bold">
+                  {item?.productId?.name}
                 </h2>
-
                 <p>
-                  Rs.{item.productId.price}
+                  Rs. {item?.productId?.price}
                 </p>
 
                 <p>
-                  Quantity: {item.quantity}
+                  Quantity: {item?.quantity}
                 </p>
 
-              </div>  
+              </div>
 
               <button
                 onClick={() => handleRemove(item._id)}

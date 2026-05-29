@@ -342,14 +342,13 @@ function Products() {
 
                   <td className="p-4">
 
-                    <img
-                      src={`http://localhost:3000/uploads/${item.image}`}
-                      alt={item.name}
-                      className="w-20 h-20 object-cover rounded cursor-pointer"
-                      onClick={() =>
-                        setSelectedImage(item.image)
+                   <img  src={`http://localhost:3000/uploads/products/${item.image}`}
+                          alt={item.name}
+                   className="w-20 h-20 object-cover rounded cursor-pointer"
+                     onClick={() =>
+                       setSelectedImage(item.image)
                       }
-                    />
+                              />
 
                   </td>
 
