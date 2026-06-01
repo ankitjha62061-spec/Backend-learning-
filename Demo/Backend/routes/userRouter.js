@@ -347,12 +347,11 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 
 //  get log in profile  that shows in profile systemmm  after login 
 
+// get logged in user profile
+
 router.get(
-
   "/profile",
-
   authMiddleware,
-
   async (req, res) => {
 
     try {
@@ -372,76 +371,66 @@ router.get(
     }
 
   }
-
 );
 
-//  for profile    update that i make in for profile system 
+
+// update profile
+
 router.put(
-
   "/profile",
-
   authMiddleware,
-
   upload.single("profileImage"),
-
   async (req, res) => {
 
     try {
 
       const {
         name,
-        email,
         mobile,
         address,
       } = req.body;
 
-      const updatedData = { name,email, mobile,address, };
+      const updatedData = {};
 
+      if (name) {
+        updatedData.name = name;
+      }
 
-    
-      
+      if (mobile) {
+        updatedData.mobile = mobile;
+      }
+
+      if (address) {
+        updatedData.address = address;
+      }
+
       if (req.file) {
         updatedData.profileImage =
           req.file.filename;
-
       }
 
       const updatedUser =
         await User.findByIdAndUpdate(
-
           req.user.id,
-
           updatedData,
-
           { new: true }
-
         ).select("-password");
 
-
-
-
       res.status(200).json({
-
         message: "Profile Updated",
-
         user: updatedUser,
-
       });
 
     } catch (error) {
 
       res.status(500).json({
-
         message: error.message,
-
       });
 
     }
 
   }
-
 );
-
 
 
 

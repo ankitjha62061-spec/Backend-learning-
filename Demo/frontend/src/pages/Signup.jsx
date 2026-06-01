@@ -32,7 +32,7 @@ function Signup() {
     } catch (error) {
       console.log(error);
       
-       alert(error.response.data.message);
+       alert(error.response?.data?.message || "Signup Failed");
       // alert("Signup Failed");
     }
   };
