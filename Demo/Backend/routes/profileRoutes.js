@@ -2,8 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const authMiddleware = require("../middleware/authMiddleware");
-const upload = require("../middleware/multer");
+// const multer = require("../middleware/multer");
 const User = require("../models/User");
+const upload = require("../middleware/multer");
+
+
 
 router.get("/", authMiddleware, async (req, res) => {
   try {
@@ -18,6 +21,9 @@ router.get("/", authMiddleware, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
+
 
 router.put(
   "/",
@@ -56,5 +62,7 @@ router.put(
     }
   }
 );
+
+
 
 module.exports = router;

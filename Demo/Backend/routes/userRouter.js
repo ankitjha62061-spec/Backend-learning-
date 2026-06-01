@@ -8,6 +8,13 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const SECRET = "mysecretkey";
 
+const multer = require("multer");
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
+});
+const upload = multer({ storage });
+
 router.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -46,6 +53,7 @@ router.post("/signup", async (req, res) => {
     });
   }
 });
+
 
 router.post("/login", async (req, res) => {
   try {
@@ -141,33 +149,47 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
-router.put("/:id", authMiddleware, async (req, res) => {
-  try {
-    const { name } = req.body;   
-    const userId = req.params.id;
 
-    if (!name) {
-      return res.status(400).json({ message: "Name is required" });
+router.put(
+  "/:id",
+  authMiddleware,
+  upload.single("profileImage"),
+  async (req, res) => {
+    try {
+      const { name } = req.body;
+      const userId = req.params.id;
+
+      const updateData = {};
+
+      if (name) {
+        updateData.name = name;
+      }
+
+      if (req.file) {
+        updateData.profileImage = req.file.path;
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        updateData,
+        { new: true }
+      ).select("-password");
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({
+        message: "User updated successfully",
+        user: updatedUser,
+      });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { name },
-      { new: true }
-    ).select("-password");
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json({
-      message: "User updated",
-      user: updatedUser,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
-});
+);
+
+
 
 
 router.patch("/:id", authMiddleware, async (req, res) => {
