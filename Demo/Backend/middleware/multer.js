@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
       file.fieldname === "profileImage"
     ) {
 
-      cb(null, "uploads/profile");
+      cb(null, "uploads/profiles");
 
     }
 

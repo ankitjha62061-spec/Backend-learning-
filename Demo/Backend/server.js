@@ -3,14 +3,10 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 
-const authRoutes =
-  require("./routes/userRouter");
-
-const productRoutes =
-  require("./routes/productRoutes");
-
-const cartRoutes =
-  require("./routes/cartRoutes");
+const authRoutes = require("./routes/userRouter");
+const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 
 const app = express();
 
@@ -34,10 +30,9 @@ mongoose.connect(
 
 });
 app.use("/api/auth", authRoutes);
-
 app.use("/api/products", productRoutes);
-
 app.use("/api/cart", cartRoutes);
+app.use("/api/profile", profileRoutes);
 app.listen(3000, () => {
 
   console.log("Server Running");
