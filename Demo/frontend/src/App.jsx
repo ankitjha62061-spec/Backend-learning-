@@ -4,7 +4,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import CartPage from "./pages/CartPage";
-import Profile from "./pages/Profile";
+// import Profile from "./pages/Profile";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -37,7 +37,7 @@ function App() {
  <Route   path="cart" element={<CartPage />}/>
 
  </Route>
-  <Route  path="/profile"element={<Profile />} />
+  {/* <Route  path="/profile"element={<Profile />} /> */}
 
       </Routes>
 

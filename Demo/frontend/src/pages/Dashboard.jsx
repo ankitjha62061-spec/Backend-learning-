@@ -10,6 +10,12 @@ import SearchBar from "../components/SearchBar";
 
 import { toast } from "react-toastify";
 
+import { getProfile } from "../services/ProfileApi";
+import ProfileModal from "../components/ProfileModal";
+import ProfileCard from "../components/ProfileCard";
+
+
+
 function Dashboard() {
 const [users, setUsers] = useState([]);
  const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +37,11 @@ const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
 
   const [totalPages, setTotalPages] = useState(1);
+
+  const [profile, setProfile] = useState(null);
+
+  const [profileModal, setProfileModal] = 
+  useState(false);
 
     const getUsers = async () => {
 
@@ -100,6 +111,20 @@ const [users, setUsers] = useState([]);
 
   };
 
+const fetchProfile = async () => {
+  try {
+    const res = await getProfile();
+
+    console.log(res.data);
+
+    setProfile(res.data.user);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
 
    const editUser = (id, name, email) => {
 
@@ -159,12 +184,23 @@ const [users, setUsers] = useState([]);
   };
 
 
+// useEffect(() => {
+
+//     getUsers();
+
+//     fetchProfile();
+
+//   }, [debounceSearch, page]);
+
+
+
 useEffect(() => {
+  getUsers();
+}, [debounceSearch, page]);
 
-    getUsers();
-
-  }, [debounceSearch, page]);
-
+useEffect(() => {
+  fetchProfile();
+}, []);
 
 useEffect(() => {
 
@@ -185,13 +221,16 @@ useEffect(() => {
 
     <div>
 
-      <div className="mb-8">
+      <div className="flex justify-between items-center mb-8">
 
         <h1 className="text-4xl font-bold">
-
           Dashboard
-
         </h1>
+
+        <ProfileCard
+          profile={profile}
+          setProfileModal={setProfileModal}
+        />
 
       </div>
 
@@ -334,6 +373,12 @@ useEffect(() => {
       </div>
 
 
+
+
+<ProfileModal
+  profileModal={profileModal}
+  setProfileModal={setProfileModal}
+/>
 
 
       <EditModal
