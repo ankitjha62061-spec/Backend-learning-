@@ -115,7 +115,7 @@ const fetchProfile = async () => {
   try {
     const res = await getProfile();
 
-    console.log(res.data);
+    // console.log(res.data);
 
     setProfile(res.data.user);
   } catch (error) {
@@ -197,6 +197,8 @@ const fetchProfile = async () => {
 useEffect(() => {
   getUsers();
 }, [debounceSearch, page]);
+
+
 
 useEffect(() => {
   fetchProfile();
@@ -378,6 +380,8 @@ useEffect(() => {
 <ProfileModal
   profileModal={profileModal}
   setProfileModal={setProfileModal}
+  profile={profile}
+  fetchProfile={fetchProfile}
 />
 
 

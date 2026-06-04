@@ -55,7 +55,7 @@ function Sidebar() {
 
 
 
-<NavLink
+{/* <NavLink
   to="/dashboard"
   className={({ isActive }) =>
     `w-14 h-14 flex items-center justify-center rounded-full 
@@ -68,7 +68,7 @@ function Sidebar() {
   }
 >
 My Profile
-</NavLink>
+</NavLink> */}
 
 
         <button

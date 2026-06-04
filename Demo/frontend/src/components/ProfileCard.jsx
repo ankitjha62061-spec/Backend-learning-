@@ -1,34 +1,40 @@
+import Avatar from "react-avatar";
+
 function ProfileCard({
   profile,
   setProfileModal,
 }) {
   return (
-    <div className="flex items-center gap-3 bg-white rounded-xl shadow px-4 py-2">
+    <div className="flex items-center">
 
-      <img
-        src={
-          profile?.profileImage
-            ? `http://localhost:3000/${profile.profileImage}`
-            : "https://via.placeholder.com/150"
-        }
-        alt="profile"
-        className="w-10 h-10 rounded-full object-cover"
-      />
+      <div
+        onClick={() => setProfileModal(true)}
+        className="cursor-pointer"
+      >
+        {profile?.profileImage ? (
+          <img
+            src={`http://localhost:3000/${profile.profileImage}`}
+            alt="profile"
+            className="w-12 h-12 rounded-full object-cover border"
+          />
+        ) : (
 
-      <div>
-        <p className="font-semibold text-sm">{profile?.name}</p>
-        <p className="text-xs text-gray-500">{profile?.email}</p>
+          // <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg">
+          //   {profile?.name?.charAt(0)?.toUpperCase() || "U"}
+          // </div>
+
+          <Avatar
+                name={profile?.name || "User"}
+                   size="48"
+                    round={true}
+                   />
+        )}
       </div>
 
-      <button
-        onClick={() => setProfileModal(true)}
-        className="bg-blue-500 text-white text-xs px-3 py-1 rounded-lg ml-2"
-      >
-        Edit
-      </button>
+
 
     </div>
   );
 }
 
-export default ProfileCard;
+export default ProfileCard;
