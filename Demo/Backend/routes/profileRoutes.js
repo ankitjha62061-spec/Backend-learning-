@@ -35,7 +35,7 @@ router.put(
 
       const updatedData = {};
 
-      if (name)    dData.name    = name;
+      if (name) updatedData.name = name;
       if (mobile)  updatedData.mobile  = mobile;
       if (address) updatedData.address = address;
 

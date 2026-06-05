@@ -4,6 +4,10 @@ function ProfileCard({
   profile,
   setProfileModal,
 }) {
+  // console.log(profile.profileImage,'kpp');
+  
+  // console.log(`http://localhost:3000/${profile.profileImage}`);
+  
   return (
     <div className="flex items-center">
 
@@ -13,7 +17,7 @@ function ProfileCard({
       >
         {profile?.profileImage ? (
           <img
-            src={`http://localhost:3000/${profile.profileImage}`}
+             src={`http://localhost:3000/uploads/profiles/${profile.profileImage}`}
             alt="profile"
             className="w-12 h-12 rounded-full object-cover border"
           />
