@@ -7,3 +7,9 @@ export const getProfile = () => {
 export const updateProfile = (formData) => {
   return API.put("/profile", formData);
 };
+
+
+
+export const removeProfileImage = () =>{
+  return API.delete("/profile/photo")
+}

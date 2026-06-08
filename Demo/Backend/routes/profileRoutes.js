@@ -64,5 +64,36 @@ router.put(
 );
 
 
+// router.delete(
+
+// )
+
+
+
+router.delete(
+  "/photo",
+  authMiddleware,
+  async (req, res) => {
+    try {
+      await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          profileImage: "",
+        }
+      );
+
+      res.json({
+        message: "Photo removed"
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        message: error.message
+      });
+    }
+  }
+);
+
+
 
 module.exports = router;

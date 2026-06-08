@@ -19,24 +19,43 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const res = await signupUser(formData);
+  if (!formData.name) {
+    alert("Name is required");
+    return;
+  }
 
-      console.log(res.data);
+  if (!formData.email) {
+    alert("Email is required");
+    return;
+  }
 
-      alert("Signup Successful");
+  if (!formData.email.includes("@")) {
+    alert("Enter valid email");
+    return;
+  }
 
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-      
-       alert(error.response?.data?.message || "Signup Failed");
-      // alert("Signup Failed");
-    }
-  };
+  if (!formData.password) {
+    alert("Password is required");
+    return;
+  }
 
+  if (formData.password.length < 6) {
+    alert("Password must be at least 6 characters");
+    return;
+  }
+
+  try {
+    const res = await signupUser(formData);
+
+    alert("Signup Successful");
+
+    navigate("/login");
+  } catch (error) {
+    alert(error.response?.data?.message || "Signup Failed");
+  }
+};
   return (
     <div className="flex items-center justify-center min-h-screen bg-pink-50">
       <form

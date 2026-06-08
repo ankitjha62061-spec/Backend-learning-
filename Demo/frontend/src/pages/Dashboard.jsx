@@ -115,7 +115,7 @@ const fetchProfile = async () => {
   try {
     const res = await getProfile();
 
-    console.log(res.data.user.profileImage,'lpp');
+    console.log(res.data.user.profileImage,);
 
     setProfile(res.data.user);
   } catch (error) {

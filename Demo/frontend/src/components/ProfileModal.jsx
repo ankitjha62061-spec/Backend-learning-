@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { updateProfile } from "../services/ProfileApi";
+import { updateProfile,removeProfileImage } from "../services/ProfileApi";
 
 function ProfileModal({ profileModal,setProfileModal, profile,fetchProfile,
 }) {
@@ -8,8 +8,14 @@ function ProfileModal({ profileModal,setProfileModal, profile,fetchProfile,
   const [address, setAddress] = useState("");
   const [file, setFile] = useState(null);
 const [preview, setPreview] = useState("");
+const handleRemoveImage = async () => {
+  await removeProfileImage();
 
+  await fetchProfile();
 
+  setPreview("");
+  setFile(null);
+};
   useEffect(() => {
     if (profile) {
       setName(profile.name || "");
@@ -61,6 +67,7 @@ const [preview, setPreview] = useState("");
                if (selectedFile) {
               setFile(selectedFile);
             setPreview(URL.createObjectURL(selectedFile));
+            console.log("hi");
              }
             }}
             />
@@ -87,23 +94,24 @@ const [preview, setPreview] = useState("");
                         ) : (
 
 
+                          
 
               <div className="w-full h-full rounded-full bg-blue-500 text-white flex items-center justify-center text-2xl font-bold">
                 {name?.charAt(0)?.toUpperCase() || "U"}
               </div>
             )}
-                {/* 
-                 <button
-               onClick={handleRemoveImage}
-              className="text-red-500 text-xs mt-2 hover:underline"
-                             >
-                    Remove Photo
-                    </button> */}
+         
+         <button
+  onClick={handleRemoveImage}
+  className="text-red-500 text-sm mt-45"
+>
+  Remove Photo
+</button>
 
 
-            <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+            {/* <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
               📷 
-            </div>
+            </div> */}
           </div>
 
           <p className="text-xs text-gray-500 mt-2">
