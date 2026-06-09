@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 
 function Login() {
@@ -53,6 +54,20 @@ function Login() {
     }
   };
 
+
+
+  const handleGoogleSuccess = async (
+  credentialResponse
+) => {
+
+  console.log(
+    credentialResponse
+  );
+
+  alert(
+    "Google Login Success"
+  );
+};
   return (
 
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -84,13 +99,25 @@ function Login() {
           className="w-full border border-gray-300 p-3 rounded-lg mb-4"
         />
 
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed"
-          disabled={!formData?.email || !formData?.password}
-        >
-          Login
-        </button>
+<button
+  type="submit"
+  className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed"
+  disabled={!formData?.email || !formData?.password}
+>
+  Login
+</button>
+
+<div className="my-4 text-center text-gray-500">
+  OR
+</div>
+
+<GoogleLogin
+  onSuccess={handleGoogleSuccess}
+  onError={() => {
+    alert("Google Login Failed");
+  }}
+/>
+
 
         <p className="text-center mt-4 text-gray-600">
           Don't have an account?
@@ -110,4 +137,7 @@ function Login() {
   );
 }
 
+// <Link to="/forgot-password">
+//   Forgot Password?
+// </Link>
 export default Login;

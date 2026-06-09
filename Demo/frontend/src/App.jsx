@@ -13,6 +13,7 @@ import DashboardLayout from "./layout/DashboardLayout";
 import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
+// import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
      <Routes>
 
         <Route path="/" element={<Login />}/>
+        {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
 
         <Route path="/signup"element={<Signup />} />
 
