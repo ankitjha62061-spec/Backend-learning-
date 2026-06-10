@@ -1,12 +1,18 @@
 const express = require("express");
 const router = express.Router();
-
 const { createToken } = require("../utils/jwt");
 const authMiddleware = require("../middleware/authMiddleware");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const SECRET = "mysecretkey";
+
+
+const { OAuth2Client } = require("google-auth-library");
+
+const client = new OAuth2Client(
+  "133509101829-kfimqd8emt4f5lqjr9p46ln7grl00008.apps.googleusercontent.com"
+);
 
 const multer = require("multer");
 const storage = multer.diskStorage({
