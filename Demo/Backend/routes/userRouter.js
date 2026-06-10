@@ -7,13 +7,13 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const SECRET = "mysecretkey";
 
+// const { OAuth2Client } = require("google-auth-library");
+// const client = new OAuth2Client(
+//   "133509101829-kfimqd8emt4f5lqjr9p46ln7grl00008.apps.googleusercontent.com"
+// );
 
 
-const { OAuth2Client } = require("google-auth-library");
 
-const client = new OAuth2Client(
-  "133509101829-kfimqd8emt4f5lqjr9p46ln7grl00008.apps.googleusercontent.com"
-);
 
 const multer = require("multer");
 const storage = multer.diskStorage({
@@ -21,6 +21,8 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
 const upload = multer({ storage });
+
+
 
 router.post("/signup", async (req, res) => {
   try {
@@ -102,6 +104,54 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+
+
+
+
+//  with google  
+
+// router.post("/google", async (req, res) => {
+//   try {
+//     const { credential } = req.body;
+//     const ticket = await client.verifyIdToken({
+//       idToken: credential,
+//       audience: "133509101829-kfimqd8emt4f5lqjr9p46ln7grl00008.apps.googleusercontent.com",
+//     });
+
+//     const data = ticket.getPayload();
+
+//     const { email, name, picture, sub } = data;
+
+  
+//     let user = await User.findOne({ email });
+//     if (!user) {
+//       user = new User({
+//         name,
+//         email,
+//         googleId: sub,
+//         provider: "google",
+//         profileImage: picture,
+//         password: "",
+//       });
+
+//       await user.save();
+//     }
+//     const token = createToken(user);
+
+//     res.json({
+//       token,
+//       user,
+//       message: "Google login successful",
+//     });
+
+//   } catch (error) {
+//     res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// });
+
+
 
 router.get("/", authMiddleware, async (req, res) => {
   try {
@@ -197,8 +247,6 @@ router.put(
 );
 
 
-
-
 router.patch("/:id", authMiddleware, async (req, res) => {
   try {
 
@@ -237,5 +285,6 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 module.exports = router;

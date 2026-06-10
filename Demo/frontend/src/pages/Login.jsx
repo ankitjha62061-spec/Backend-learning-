@@ -56,17 +56,27 @@ function Login() {
 
 
 
-  const handleGoogleSuccess = async (
-  credentialResponse
-) => {
+//   const handleGoogleSuccess = async (
+//   credentialResponse
+// ) => {
 
-  console.log(
-    credentialResponse
-  );
+//   console.log(
+//     credentialResponse
+//   );
 
-  alert(
-    "Google Login Success"
-  );
+//   alert(
+//     "Google Login Success"
+//   );
+// };
+
+
+const handleGoogleSuccess = async (credentialResponse) => {
+
+  console.log("Google Login Response:", credentialResponse);
+
+  console.log("Google Token:", credentialResponse.credential);
+
+  alert("Google Login Success");
 };
   return (
 

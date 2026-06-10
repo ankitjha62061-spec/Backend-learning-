@@ -18,16 +18,16 @@ const userSchema = new mongoose.Schema({
     required: "",
   },
 
-googleId:{
-  type: String,
-  default:""
-},
+// googleId:{
+//   type: String,
+//   default:""
+// },
 
-provider:{
-  type: String,
-  enum: ["local",  "google"],
-  default: "local"
-},
+// provider:{
+//   type: String,
+//   enum: ["local",  "google"],
+//   default: "local"
+// },
   
 
   mobile: {
