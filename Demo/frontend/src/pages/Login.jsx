@@ -20,6 +20,10 @@ function Login() {
     });
   };
 
+
+
+
+    // normal login  with pass :- 
   const handleSubmit = async (e) => {
 
     e.preventDefault();
@@ -55,29 +59,40 @@ function Login() {
   };
 
 
+// //   google login 
+const handleGoogleSuccess = async (credentialResponse )=>
+  {
+    try{
+      const res = await axios.post(
+        "http://localhost:3000/api/auth/google",
+        {
+          credential: credentialResponse.credential
+        }
+      );
 
-//   const handleGoogleSuccess = async (
-//   credentialResponse
-// ) => {
+      localStorage.setItem(
+        "token",
+        res.data.token
+      );
 
-//   console.log(
-//     credentialResponse
-//   );
 
-//   alert(
-//     "Google Login Success"
-//   );
+      alert("Google Login Successful");
+      navigate("/dashboard");
+
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      alert("Google Login Failed");
+    }
+  }
+
+// const handleGoogleSuccessv1  = async (credentialResponse) => {
+
+//   console.log("Google Login Response:", credentialResponse);
+
+//   console.log("Google Token:", credentialResponse.credential);
+
+//   alert("Google Login Success");
 // };
-
-
-const handleGoogleSuccess = async (credentialResponse) => {
-
-  console.log("Google Login Response:", credentialResponse);
-
-  console.log("Google Token:", credentialResponse.credential);
-
-  alert("Google Login Success");
-};
   return (
 
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
